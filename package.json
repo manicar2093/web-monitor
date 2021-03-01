@@ -1,0 +1,13 @@
+{
+  "name": "web_monitor",
+  "version": "0.0.1",
+  "description": "",
+  "main": "main.js",
+  "scripts": {"start": "electron ."},
+  "keywords": [],
+  "author": "Manuel Carbajal",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^11.3.0"
+  }
+}
