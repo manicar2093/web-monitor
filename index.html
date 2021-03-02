@@ -1,18 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Monitor</title>
-    <style>
-        body {
-            background-color: black;
-            color: white;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
+    <title>Monitor Web</title>
 </head>
+
 <body>
-    <h2>Hello. You get it</h2>
+    <div class="hero">
+        <div class="hero__title">
+            <h1>Monitor Web </h1>
+        </div>
+        <div class="hero__content">
+            <p>Registra. Espera. Descansa :D</p>
+        </div>
+    </div>
+    <div class="container" id="pages">
+        
+    </div>
+    <footer class="footer">
+        <p class="text_center">Creado por: <span class="bold">GD4U</span></p>
+    </footer>
+    <script>
+        require("./renderer")
+    </script>
 </body>
+
 </html>
