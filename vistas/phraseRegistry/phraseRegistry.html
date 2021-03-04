@@ -12,26 +12,20 @@
 <body>
     <div class="hero">
         <div class="hero__title">
-            <h1>Registra una página</h1>
+            <h1>Registra una frase</h1>
         </div>
         <div class="hero__content">
-            <p>Estas son las páginas que estaremos revisando para ver que esten disponibles</p>
+            <p>Estas frases las mostraremos aleatoriamente cuando una de las paginas no responda correctamente.</p>
         </div>
     </div>
     <div class="container">
         <div class="form">
-            <form id="pageForm">
+            <form id="fraseForm">
                 <div class="form_control">
-                    <label for="nombre">
-                        <h2 class="text_center">Nombre </h2>
+                    <label for="frase">
+                        <h2 class="text_center">Frase</h2>
                     </label>
-                    <input name="nombre" id="nombre" type="text">
-                </div>
-                <div class="form_control">
-                    <label for="url">
-                        <h2 class="text_center">URL</h2>
-                    </label>
-                    <input name="url" id="url" type="url">
+                    <textarea name="frase" id="frase" cols="40" rows="3"></textarea>
                 </div>
                 <div class="buttons">
                     <button class="button button--primary" type="submit">Registrar</button>
@@ -40,13 +34,13 @@
             </form>
         </div>
         <div class="registrados">
-            <h1>Páginas Registradas </h1>
+            <h1>Frases Registradas </h1>
             <ul>
-                <li>Pagina </li>
-                <li>Pagina </li>
-                <li>Pagina </li>
-                <li>Pagina </li>
-                <li>Pagina </li>
+                <li>frase</li>
+                <li>frase</li>
+                <li>frase</li>
+                <li>frase</li>
+                <li>frase</li>
             </ul>
         </div>
     </div>
@@ -54,7 +48,7 @@
         <p class="text_center">Creado por: <span class="bold">GD4U</span></p>
     </footer>
     <script>
-        require("./pageRegistry")
+        require("./phraseRegistry")
     </script>
 </body>
 

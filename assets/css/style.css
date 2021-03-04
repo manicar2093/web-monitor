@@ -113,7 +113,7 @@ p {
     border-radius: 10px; }
 
 .buttons {
-  margin-top: .1rem; }
+  margin-top: 1rem; }
   .buttons .button {
     padding: .7rem .3rem;
     margin: 0 auto;
@@ -147,6 +147,31 @@ p {
     margin-bottom: 1rem; }
   .registrados ul li {
     margin-bottom: 1rem; }
+
+.form {
+  margin: 1rem auto;
+  width: 25%;
+  text-align: center; }
+  .form .form_control {
+    margin: 1rem 0; }
+    .form .form_control label h2 {
+      margin: .5rem; }
+
+input {
+  width: auto;
+  height: 2rem;
+  font-family: inherit;
+  border-radius: 50px;
+  border-color: #BDBDBD;
+  padding: 1rem; }
+
+textarea {
+  resize: none;
+  border-inline: 5px;
+  font-family: inherit;
+  border-radius: 50px;
+  border-color: #BDBDBD;
+  padding: 1rem; }
 
 .container {
   width: 90vw;

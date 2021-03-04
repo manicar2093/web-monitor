@@ -1,4 +1,5 @@
-const { Menu, BrowserWindow, dialog, app } = require("electron")
+const { Menu, dialog, app } = require("electron")
+const { createWindowFunction } = require("./windowsCreator")
 
 let pageRegistryWin, phraseRegistryWin
 
@@ -20,52 +21,38 @@ const createDialogExitApp = async () => {
     }
 }
 
-const createRegistryPageWindow = () => {
-    pageRegistryWin = new BrowserWindow({
-        width: 1000,
-        height: 800,
-        minWidth: 800,
-        minHeight: 600,
-        show: false,
-        webPreferences: {
-            nodeIntegration: true,
-        },
-    })
+const createRegistryPageWindow = createWindowFunction({
+    width: 990,
+    height: 700,
+    minWidth: 990,
+    minHeight: 700,
+    maxWidth: 990,
+    maxHeight: 700,
+    maximizable: false,
+    show: false,
+    webPreferences: {
+        nodeIntegration: true,
+    },
+}, "./vistas/pageRegistry/pageRegistry.html", pageRegistryWin)
 
-    pageRegistryWin.webContents.openDevTools()
-
-    pageRegistryWin.loadFile("./vistas/pageRegistry/pageRegistry.html")
-    pageRegistryWin.on("ready-to-show", pageRegistryWin.show)
-    pageRegistryWin.on("closed", () => {
-        pageRegistryWin = null
-    })
-}
-
-const createRegistryPhraseWindow = () => {
-    phraseRegistryWin = new BrowserWindow({
-        width: 1000,
-        height: 800,
-        minWidth: 800,
-        minHeight: 600,
-        show: false,
-        webPreferences: {
-            nodeIntegration: true,
-        },
-    })
-
-    phraseRegistryWin.webContents.openDevTools()
-
-    phraseRegistryWin.loadFile("./vistas/phraseRegistry/phraseRegistry.html")
-    phraseRegistryWin.on("ready-to-show", phraseRegistryWin.show)
-    phraseRegistryWin.on("closed", () => {
-        phraseRegistryWin = null
-    })
-}
+const createRegistryPhraseWindow = createWindowFunction({
+    width: 990,
+    height: 700,
+    minWidth: 990,
+    minHeight: 700,
+    maxWidth: 990,
+    maxHeight: 700,
+    maximizable: false,
+    show: false,
+    webPreferences: {
+        nodeIntegration: true,
+    },
+}, "./vistas/phraseRegistry/phraseRegistry.html", phraseRegistryWin)
 
 const trayMenu = Menu.buildFromTemplate([
-    {label: "Salir", click: createDialogExitApp},
     {label: "Registra Página", click: createRegistryPageWindow},
-    //{label: "Registrar Frase", click: createRegistryPhraseWindow}
+    {label: "Registrar Frase", click: createRegistryPhraseWindow},
+    {label: "Salir", click: createDialogExitApp},
 ])
 
 module.exports = {

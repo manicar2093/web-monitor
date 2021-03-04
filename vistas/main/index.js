@@ -25,11 +25,9 @@ const createCards = (rows) => {
                 </div>
                 <div class="card__img"> <img src="${i.image}"></div>
                 <div class="card__content text_center">
-                    <p>${i.url}</p>
                     <div class="buttons">
                         <button class="button button--primary">Actualizar</button>
                         <button class="button button--info">Visitar</button>
-                        <!--button.button.button--danger Eliminar-->
                     </div>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-const {app, Tray, Menu, BrowserWindow, Notification, dialog, ipcMain} = require("electron")
+const {app, Tray, Notification, ipcMain} = require("electron")
 const database = require("./database")
 const {trayMenu} = require("./tray")
 const {createWindowFunction} = require("./windowsCreator")
