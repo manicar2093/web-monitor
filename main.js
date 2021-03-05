@@ -1,5 +1,5 @@
-const {app, Tray, Notification, ipcMain} = require("electron")
-const database = require("./database")
+const {app, Tray, Notification, ipcMain, dialog} = require("electron")
+const database = require("./dao")
 const {trayMenu} = require("./tray")
 const {createWindowFunction} = require("./windowsCreator")
 
@@ -50,4 +50,24 @@ app.on("window-all-closed", (e) => {
 
 ipcMain.handle("getAllPages", (e) => {
     return database.getAllPages()
+})
+
+ipcMain.handle("deletePage", async (e, id) => {
+    try {
+        database.deletePagina(id)
+        return
+    } catch (e){
+        console.error(e)
+        dialog.showErrorBox("Error al eliminar página", "Hubo un problema al eliminar la página solicitada.")
+        return
+    }
+})
+
+ipcMain.handle("savePage", (e, args) => {
+    console.log(args)
+    //return database.savePage(args[0])
+})
+
+ipcMain.handle("getAllFrases", (e)=>{
+    return database.getAllFrases()
 })

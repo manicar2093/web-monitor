@@ -63,12 +63,8 @@ exports.updateFrase = (id, frase) => {
 exports.getAllPages = () => {
     return new Promise((res, rej) => {
         db.all("SELECT * FROM paginas", (e, rows) => {
-            if (e) {
-                rej(e)
-            } else {
-                res(rows)
-            }
-
+            if (e) rej(e)
+            else res(rows)
         })
     })
 }
@@ -77,18 +73,25 @@ exports.getAllPages = () => {
  * 
  * Realiza el guardado de una pagina
  * 
- * @param {Array} data URL, name, image y status que se debe registrar
+ * @param {Object} data URL, name, image y status que se debe registrar
  * @param {Function} callback Función que se corre
  */
-exports.savePage = (data, callback) => {
-    db.run("INSERT INTO paginas (url,image,status, name) VALUES (?,?,?,?)", data, callback)
+exports.savePage = (data) => {
+
+    return new Promise((res, rej)=> {
+
+        db.run("INSERT INTO paginas (url,image,status, name) VALUES (?,?,?,?)", [data.url, data.image, data.status, data.name], (e, data) => {
+            if (e) rej(e)
+            else res(data)
+        })
+    })
 }
 
 /**
  * Elimina una página de la base de datos
  * @param {Any} id Identificador de la frase que se debe eliminar
  */
-exports.deleteFrase = (id) => {
+exports.deletePagina = (id) => {
     return new Promise((res, rej) => {
         db.run("DELETE FROM paginas WHERE id = ?", id, (e, data) => {
             if (e) rej(e)
@@ -102,7 +105,13 @@ exports.deleteFrase = (id) => {
  * @param {Object} data status y id que se usaran para el update
  * @param {Function} callback Funcion que se corre
  */
-exports.updatePage = (data, callback) => {
-    db.run("UPDATE paginas SET status=? WHERE id = ?", [data.status, data.id], callback)
+exports.updatePage = (data) => {
+    return new Promise((res, rej) => {
+        // TODO: agregar los campos correctos que se deben actualizar
+        db.run("UPDATE paginas SET status=? WHERE id = ?", [data.status, data.id], (e, data) => {
+            if (e) rej(e)
+            else res(data)
+        })
+    })
 }
 
