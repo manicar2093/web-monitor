@@ -1,7 +1,7 @@
-const {app, Tray, Notification, ipcMain, dialog} = require("electron")
+const {app, Tray, Notification, ipcMain, dialog, BrowserWindow} = require("electron")
 const database = require("./dao")
 const {trayMenu} = require("./tray")
-const {createWindowFunction} = require("./windowsCreator")
+const {createWindowFunction, getImageFromWindow} = require("./windowsCreator")
 
 let mainWindow, tray, startNotification;
 
@@ -52,6 +52,10 @@ ipcMain.handle("getAllPages", (e) => {
     return database.getAllPages()
 })
 
+ipcMain.handle("getPageById", (e, id) => {
+    return database.getPageById(id)
+})
+
 ipcMain.handle("deletePage", async (e, id) => {
     try {
         database.deletePagina(id)
@@ -63,9 +67,26 @@ ipcMain.handle("deletePage", async (e, id) => {
     }
 })
 
-ipcMain.handle("savePage", (e, args) => {
-    console.log(args)
-    //return database.savePage(args[0])
+ipcMain.handle("savePage", async (e, data) => {
+    console.log("DATA TO SAVE", data)
+    let imageUrl = await getImageFromWindow(data.url)
+    data.image = imageUrl
+    data.status = true
+    try {
+        database.savePage(data)
+        dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
+            message:"Pagina guardada correctamente",
+            title: "Éxito"
+        })
+    } catch (error) {
+        console.error(error)
+        dialog.showErrorBox("Error al eliminar página", "Hubo un problema al eliminar la página solicitada.")
+        return
+    }
+})
+
+ipcMain.handle("updatePage", (e, args) => {
+    return database.updatePage(args)
 })
 
 ipcMain.handle("getAllFrases", (e)=>{

@@ -70,6 +70,20 @@ exports.getAllPages = () => {
 }
 
 /**
+ * Obtiene una pagina por su ID
+ * @param {Number} id Identificador de la página deseada
+ * @returns Objeto con los datos de la pagina
+ */
+exports.getPageById = (id) => {
+    return new Promise((res, rej)=>{
+        db.all("SELECT * FROM paginas WHERE id=?", [id], (e, row) => {
+            if (e) rej(e)
+            else res(row)
+        })
+    })
+}
+
+/**
  * 
  * Realiza el guardado de una pagina
  * 
@@ -108,7 +122,7 @@ exports.deletePagina = (id) => {
 exports.updatePage = (data) => {
     return new Promise((res, rej) => {
         // TODO: agregar los campos correctos que se deben actualizar
-        db.run("UPDATE paginas SET status=? WHERE id = ?", [data.status, data.id], (e, data) => {
+        db.run("UPDATE paginas SET url=?, image=?, status=?, name=? WHERE id = ?", [data.url, data.image, data.status, data.name, data.id], (e, data) => {
             if (e) rej(e)
             else res(data)
         })

@@ -6,33 +6,56 @@ let pageName = document.getElementById("nombre")
 let pageUrl = document.getElementById("url")
 let pageId = document.getElementById("id")
 
-let moveType = "SAVE"
+const SAVE = "SAVE"
+const UPDATE = "UPDATE"
+let moveType = SAVE
 
-
+pageForm.addEventListener("submit", async (e) => {
+    e.preventDefault()
+    await savePage()
+    pageForm.reset()
+})
 
 async function deleteButton(id) {
     if (!confirm("¿Seguro quieres eliminar la frase?")) {
         return
     }
     await ipcRenderer.invoke("deletePage", id)
+    await createRegistros()
 }
 
-function savePage() {
-    if (moveType == "UPDATE") {
-        let data = {
-            id: pageId.value,
-            url: pageUrl.value,
-            name: pageName.value,
-        }
-        // TODO : Terminar logica de guardado y actualización
+async function savePage() {
+    let data = {
+        id: pageId.value,
+        url: pageUrl.value,
+        name: pageName.value,
     }
+    switch(moveType) {
+        case UPDATE:
+            await ipcRenderer.invoke("updatePage", data)
+            moveType = SAVE
+            break
+        case SAVE:
+            await ipcRenderer.invoke("savePage", data)
+            moveType = SAVE
+            break
+    }
+
+    await createRegistros()
+    
 }
 
-function updateButton(id) {
-    console.log("A actualizar:",id)
+async function updateButton(id) {
+    let registry = await ipcRenderer.invoke("getPageById")
+    pageName.value = registry.name
+    pageUrl.value = registry.url
+    pageId.value = registry.id
+    moveType = UPDATE
+    
 }
 
-const createRegistros = (rows)=> {
+const createRegistros = async ()=> {
+    let rows = await ipcRenderer.invoke("getAllPages")
     registros.innerHTML = /*html*/ `
         <h1>Páginas Registradas </h1>
     `
@@ -58,10 +81,4 @@ const createRegistros = (rows)=> {
     })
 }
 
-
-
-ipcRenderer.invoke("getAllPages").then(rows => {
-    createRegistros(rows)
-})
-
-
+createRegistros()
