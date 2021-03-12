@@ -96,11 +96,60 @@ ipcMain.handle("updatePage", async (e, data) => {
         
     } catch (error) {
         console.error(error)
-        dialog.showErrorBox("Error al actualizar página", "Hubo un problema al actualizr la página solicitada.")
+        dialog.showErrorBox("Error al actualizar página", "Hubo un problema al actualizar la página solicitada.")
         return
     }
 })
 
 ipcMain.handle("getAllFrases", (e)=>{
     return database.getAllFrases()
+})
+
+
+ipcMain.handle("getAllPhrases", e => {
+    return database.getAllFrases()
+})
+
+ipcMain.handle("getPhraseById", (e, id) => {
+    return database.getPhraseById(id)
+})
+
+ipcMain.handle("savePhrase", async (e, data) => {
+    try {
+        database.saveFrase(data.frase)
+        dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
+            title: "Éxito",
+            message: "La frase se ha creado correctamente"
+        })
+    } catch (error) {
+        console.error(error)
+        dialog.showErrorBox("Error al crear frase", "Hubo un problema al crear la frase solicitada.")
+        return
+    }
+})
+
+ipcMain.handle("updatePhrase", async (e, data) => {
+    try {
+        database.updateFrase(data.id, data.frase)
+        dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
+            title: "Éxito",
+            message: "Frase actualizada!"
+        })
+    } catch (error) {
+        console.error(error)
+        dialog.showErrorBox("Error al actualizar frase", "Hubo un problema al actualizar la frase solicitada.")
+        return
+    }
+
+})
+
+ipcMain.handle("deletePhrase", (e, id) => {
+    try {
+        database.deleteFrase(id)
+        return
+    } catch (error) {
+        console.error(e)
+        dialog.showErrorBox("Error al eliminar frase", "Hubo un problema al eliminar la frase solicitada.")
+        return
+    }
 })

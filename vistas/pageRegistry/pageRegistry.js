@@ -17,6 +17,7 @@ pageForm.addEventListener("submit", async (e) => {
     submitButton.setAttribute("disabled", true)
     if (pageName.value == "" || pageUrl == "" ){
         alert("Los datos no son validos. Favor de llenar de forma correcta")
+        submitButton.removeAttribute("disabled")
         return
     }
     await savePage()
@@ -55,7 +56,6 @@ async function savePage() {
 
 async function updateButton(id) {
     let registry = await ipcRenderer.invoke("getPageById", id)
-    console.log(registry)
     pageName.value = registry.name
     pageUrl.value = registry.url
     pageId.value = registry.id

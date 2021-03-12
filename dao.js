@@ -14,6 +14,20 @@ exports.getAllFrases = () => {
 }
 
 /**
+ * Obtiene una frase por su ID
+ * @param {Number} id Identificador de la frase deseada
+ * @returns Objeto con los datos de la frase
+ */
+ exports.getPhraseById = (id) => {
+    return new Promise((res, rej)=>{
+        db.get("SELECT * FROM frases WHERE id=?", [id], (e, row) => {
+            if (e) rej(e)
+            else res(row)
+        })
+    })
+}
+
+/**
  * 
  * Realiza el registro de una frase en la base de datos
  * 
@@ -50,7 +64,7 @@ exports.deleteFrase = (id) => {
  */
 exports.updateFrase = (id, frase) => {
     return new Promise((res, rej) => {
-        db.run("UPDATE frases SET frase = ? WHERE id = ?", [id,frase], (e, data) => {
+        db.run("UPDATE frases SET frase = ? WHERE id = ?", [frase, id], (e, data) => {
             if (e) rej(e)
             else res(data)
         })
@@ -122,7 +136,6 @@ exports.deletePagina = (id) => {
  */
 exports.updatePage = (data) => {
     return new Promise((res, rej) => {
-        // TODO: agregar los campos correctos que se deben actualizar
         db.run("UPDATE paginas SET url=?, image=?, status=?, name=? WHERE id = ?", [data.url, data.image, data.status, data.name, data.id], (e, data) => {
             if (e) rej(e)
             else res(data)
