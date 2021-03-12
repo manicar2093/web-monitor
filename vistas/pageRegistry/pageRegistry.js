@@ -6,14 +6,22 @@ let pageName = document.getElementById("nombre")
 let pageUrl = document.getElementById("url")
 let pageId = document.getElementById("id")
 
+let submitButton = document.querySelector("button[type='submit']")
+
 const SAVE = "SAVE"
 const UPDATE = "UPDATE"
 let moveType = SAVE
 
 pageForm.addEventListener("submit", async (e) => {
     e.preventDefault()
+    submitButton.setAttribute("disabled", true)
+    if (pageName.value == "" || pageUrl == "" ){
+        alert("Los datos no son validos. Favor de llenar de forma correcta")
+        return
+    }
     await savePage()
     pageForm.reset()
+    submitButton.removeAttribute("disabled")
 })
 
 async function deleteButton(id) {
@@ -46,7 +54,8 @@ async function savePage() {
 }
 
 async function updateButton(id) {
-    let registry = await ipcRenderer.invoke("getPageById")
+    let registry = await ipcRenderer.invoke("getPageById", id)
+    console.log(registry)
     pageName.value = registry.name
     pageUrl.value = registry.url
     pageId.value = registry.id

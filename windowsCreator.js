@@ -36,30 +36,10 @@ module.exports.getImageFromWindow = (url) => {
         })
         offscreen.loadURL(url)
         offscreen.webContents.on("did-finish-load", (e) => {
-            console.log("CARGADO")
             offscreen.webContents.capturePage().then(image => {
                 res(image.toDataURL())
             })
         })
     })
-    let offscreen = new BrowserWindow({
-        width: 800,
-        height: 800,
-        show: false,
-        webPreferences: {
-            offscreen:false
-        }
-    })
-    offscreen.loadURL(url)
-
-    offscreen.webContents.on("did-finish-load", (e) => {
-            offscreenWindow.webContents.capturePage().then(image => {
-                let dataImg = image.toDataURL()
-                res(dataImg)
-            })
-    })
-
-    offscreen.close()
-    offscreen = null
     
 }

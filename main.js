@@ -68,7 +68,6 @@ ipcMain.handle("deletePage", async (e, id) => {
 })
 
 ipcMain.handle("savePage", async (e, data) => {
-    console.log("DATA TO SAVE", data)
     let imageUrl = await getImageFromWindow(data.url)
     data.image = imageUrl
     data.status = true
@@ -85,8 +84,21 @@ ipcMain.handle("savePage", async (e, data) => {
     }
 })
 
-ipcMain.handle("updatePage", (e, args) => {
-    return database.updatePage(args)
+ipcMain.handle("updatePage", async (e, data) => {
+    data.image = await getImageFromWindow(data.url)
+    data.status = true
+    try {
+        database.updatePage(data)
+        dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
+            message:" Página actualizada correctamente",
+            title: "Éxito"
+        })
+        
+    } catch (error) {
+        console.error(error)
+        dialog.showErrorBox("Error al actualizar página", "Hubo un problema al actualizr la página solicitada.")
+        return
+    }
 })
 
 ipcMain.handle("getAllFrases", (e)=>{

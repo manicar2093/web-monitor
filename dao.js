@@ -75,8 +75,9 @@ exports.getAllPages = () => {
  * @returns Objeto con los datos de la pagina
  */
 exports.getPageById = (id) => {
+    console.log("ID ha buscar:", id)
     return new Promise((res, rej)=>{
-        db.all("SELECT * FROM paginas WHERE id=?", [id], (e, row) => {
+        db.get("SELECT * FROM paginas WHERE id=?", [id], (e, row) => {
             if (e) rej(e)
             else res(row)
         })
