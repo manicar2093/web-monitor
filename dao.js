@@ -83,6 +83,15 @@ exports.getAllPages = () => {
     })
 }
 
+exports.getAllPagesWithStatusFalse = () => {
+    return new Promise((res, rej) => {
+        db.all("SELECT * FROM paginas WHERE status = 0", (e, rows) => {
+            if (e) rej(e)
+            else res(rows)
+        })
+    })
+}
+
 /**
  * Obtiene una pagina por su ID
  * @param {Number} id Identificador de la página deseada

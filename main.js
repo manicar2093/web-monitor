@@ -3,6 +3,8 @@ const database = require("./dao")
 const {trayMenu} = require("./tray")
 const {createWindowFunction, getImageFromWindow} = require("./windowsCreator")
 
+require("./cron")
+
 let mainWindow, tray, startNotification;
 
 
