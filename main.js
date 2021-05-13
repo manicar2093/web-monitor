@@ -2,7 +2,7 @@ const {app, Tray, Notification, ipcMain, dialog, BrowserWindow} = require("elect
 const database = require("./dao")
 const {trayMenu} = require("./tray")
 const {createWindowFunction, getImageFromWindow} = require("./windowsCreator")
-
+require("./menu")
 require("./cron")
 
 let mainWindow, tray, startNotification;
@@ -10,7 +10,7 @@ let mainWindow, tray, startNotification;
 
 function initTrayApp() {
     tray = new Tray("Logo.png")
-    tray.setTitle("Ha iniiado el Web Monitor")
+    tray.setTitle("Ha iniciado el Web Monitor")
     tray.setToolTip("Web Monitor")
     tray.setContextMenu(trayMenu)
 
