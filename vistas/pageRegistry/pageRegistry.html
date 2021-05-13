@@ -21,6 +21,7 @@
     <div class="container">
         <div class="form">
             <form id="pageForm">
+                <input type="hidden" name="id" id="id" value="">
                 <div class="form_control">
                     <label for="nombre">
                         <h2 class="text_center">Nombre </h2>
@@ -39,23 +40,14 @@
                 </div>
             </form>
         </div>
-        <div class="registrados">
-            <h1>Páginas Registradas </h1>
-            <ul>
-                <li>Pagina </li>
-                <li>Pagina </li>
-                <li>Pagina </li>
-                <li>Pagina </li>
-                <li>Pagina </li>
-            </ul>
+        <div class="registrados" id="registrados">
+            
         </div>
     </div>
     <footer class="footer">
         <p class="text_center">Creado por: <span class="bold">GD4U</span></p>
     </footer>
-    <script>
-        require("./pageRegistry")
-    </script>
+    <script src="./pageRegistry.js"></script>
 </body>
 
 </html>

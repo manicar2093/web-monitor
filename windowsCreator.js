@@ -1,4 +1,5 @@
 const { BrowserWindow } = require("electron")
+const { env } = require("./env")
 
 /**
  * 
@@ -13,7 +14,9 @@ module.exports.createWindowFunction = (options, file, target) => {
     return () => {
         target = new BrowserWindow(options)
 
-        target.webContents.openDevTools()
+        if(env.in_dev) {
+            target.webContents.openDevTools()
+        }
 
         target.loadFile(file)
         target.on("ready-to-show", target.show)
@@ -21,4 +24,25 @@ module.exports.createWindowFunction = (options, file, target) => {
             target = null
         })
     }
+}
+
+module.exports.getImageFromWindow = (url) => {
+
+    return new Promise((res, rej) => {
+        let offscreen = new BrowserWindow({
+            width: 800,
+            height: 800,
+            show: false,
+            webPreferences: {
+                offscreen:false
+            }
+        })
+        offscreen.loadURL(url)
+        offscreen.webContents.on("did-finish-load", (e) => {
+            offscreen.webContents.capturePage().then(image => {
+                res(image.toDataURL())
+            })
+        })
+    })
+    
 }

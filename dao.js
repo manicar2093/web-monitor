@@ -14,6 +14,20 @@ exports.getAllFrases = () => {
 }
 
 /**
+ * Obtiene una frase por su ID
+ * @param {Number} id Identificador de la frase deseada
+ * @returns Objeto con los datos de la frase
+ */
+ exports.getPhraseById = (id) => {
+    return new Promise((res, rej)=>{
+        db.get("SELECT * FROM frases WHERE id=?", [id], (e, row) => {
+            if (e) rej(e)
+            else res(row)
+        })
+    })
+}
+
+/**
  * 
  * Realiza el registro de una frase en la base de datos
  * 
@@ -50,7 +64,7 @@ exports.deleteFrase = (id) => {
  */
 exports.updateFrase = (id, frase) => {
     return new Promise((res, rej) => {
-        db.run("UPDATE frases SET frase = ? WHERE id = ?", [id,frase], (e, data) => {
+        db.run("UPDATE frases SET frase = ? WHERE id = ?", [frase, id], (e, data) => {
             if (e) rej(e)
             else res(data)
         })
@@ -63,12 +77,32 @@ exports.updateFrase = (id, frase) => {
 exports.getAllPages = () => {
     return new Promise((res, rej) => {
         db.all("SELECT * FROM paginas", (e, rows) => {
-            if (e) {
-                rej(e)
-            } else {
-                res(rows)
-            }
+            if (e) rej(e)
+            else res(rows)
+        })
+    })
+}
 
+exports.getAllPagesWithStatusFalse = () => {
+    return new Promise((res, rej) => {
+        db.all("SELECT * FROM paginas WHERE status = 0", (e, rows) => {
+            if (e) rej(e)
+            else res(rows)
+        })
+    })
+}
+
+/**
+ * Obtiene una pagina por su ID
+ * @param {Number} id Identificador de la página deseada
+ * @returns Objeto con los datos de la pagina
+ */
+exports.getPageById = (id) => {
+    console.log("ID ha buscar:", id)
+    return new Promise((res, rej)=>{
+        db.get("SELECT * FROM paginas WHERE id=?", [id], (e, row) => {
+            if (e) rej(e)
+            else res(row)
         })
     })
 }
@@ -77,18 +111,25 @@ exports.getAllPages = () => {
  * 
  * Realiza el guardado de una pagina
  * 
- * @param {Array} data URL, name, image y status que se debe registrar
+ * @param {Object} data URL, name, image y status que se debe registrar
  * @param {Function} callback Función que se corre
  */
-exports.savePage = (data, callback) => {
-    db.run("INSERT INTO paginas (url,image,status, name) VALUES (?,?,?,?)", data, callback)
+exports.savePage = (data) => {
+
+    return new Promise((res, rej)=> {
+
+        db.run("INSERT INTO paginas (url,image,status, name) VALUES (?,?,?,?)", [data.url, data.image, data.status, data.name], (e, data) => {
+            if (e) rej(e)
+            else res(data)
+        })
+    })
 }
 
 /**
  * Elimina una página de la base de datos
  * @param {Any} id Identificador de la frase que se debe eliminar
  */
-exports.deleteFrase = (id) => {
+exports.deletePagina = (id) => {
     return new Promise((res, rej) => {
         db.run("DELETE FROM paginas WHERE id = ?", id, (e, data) => {
             if (e) rej(e)
@@ -102,7 +143,12 @@ exports.deleteFrase = (id) => {
  * @param {Object} data status y id que se usaran para el update
  * @param {Function} callback Funcion que se corre
  */
-exports.updatePage = (data, callback) => {
-    db.run("UPDATE paginas SET status=? WHERE id = ?", [data.status, data.id], callback)
+exports.updatePage = (data) => {
+    return new Promise((res, rej) => {
+        db.run("UPDATE paginas SET url=?, image=?, status=?, name=? WHERE id = ?", [data.url, data.image, data.status, data.name, data.id], (e, data) => {
+            if (e) rej(e)
+            else res(data)
+        })
+    })
 }
 

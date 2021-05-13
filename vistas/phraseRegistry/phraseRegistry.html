@@ -21,6 +21,8 @@
     <div class="container">
         <div class="form">
             <form id="fraseForm">
+                <input type="hidden" name="id" id="id" value="">
+                <input hidden name="id" id="id">
                 <div class="form_control">
                     <label for="frase">
                         <h2 class="text_center">Frase</h2>
@@ -33,23 +35,14 @@
                 </div>
             </form>
         </div>
-        <div class="registrados">
-            <h1>Frases Registradas </h1>
-            <ul>
-                <li>frase</li>
-                <li>frase</li>
-                <li>frase</li>
-                <li>frase</li>
-                <li>frase</li>
-            </ul>
+        <div class="registrados" id="registrados">
+            
         </div>
     </div>
     <footer class="footer">
         <p class="text_center">Creado por: <span class="bold">GD4U</span></p>
     </footer>
-    <script>
-        require("./phraseRegistry")
-    </script>
+    <script src="./phraseRegistry.js"></script>
 </body>
 
 </html>
