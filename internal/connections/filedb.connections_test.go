@@ -8,6 +8,8 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
+	"github.com/manicar2093/web-monitor/internal/entities"
+	"github.com/stretchr/testify/require"
 )
 
 const fileName = ".test.json"
@@ -60,16 +62,14 @@ func TestNewFileDatabase(t *testing.T) {
 func TestPublicMethods(t *testing.T) {
 	fdb := NewFileDatabase(fileName)
 
+	testingData := entities.Page{
+		ID:     uuid.New().String(),
+		Name:   "testing",
+		URL:    "aurl",
+		Status: true,
+	}
+
 	t.Run("Escribir un objeto JSON", func(t *testing.T) {
-		testingData := struct {
-			ID   string `json:"id"`
-			Name string `json:"name"`
-			Age  int32  `json:"age"`
-		}{
-			ID:   uuid.New().String(),
-			Name: "testing",
-			Age:  27,
-		}
 
 		f := func(data string) (string, error) {
 			j, err := json.Marshal(&testingData)
@@ -92,6 +92,24 @@ func TestPublicMethods(t *testing.T) {
 		if !strings.Contains(s, "testing") {
 			t.Fatal("no hay data guardada")
 		}
+	})
+
+	t.Run("Leer la información que se encuentra dentro del archivo", func(t *testing.T) {
+
+		var d entities.Page
+
+		f := func(data string) error {
+			return json.Unmarshal([]byte(data), &d)
+		}
+
+		if err := fdb.ReadData(f); err != nil {
+			t.Fatal(err)
+		}
+
+		require.Equal(t, testingData.ID, d.ID, "assertion error")
+		require.Equal(t, testingData.Name, d.Name, "assertion error")
+		require.Equal(t, testingData.Status, d.Status, "assertion error")
+		require.Equal(t, testingData.URL, d.URL, "assertion error")
 	})
 
 	t.Cleanup(deleteTestFile)

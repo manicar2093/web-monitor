@@ -75,7 +75,7 @@ func (f FileDatabase) readFile() (string, error) {
 }
 
 func (f FileDatabase) writeFile(data []byte) error {
-	file, err := os.OpenFile(f.Path, os.O_WRONLY, 0777)
+	file, err := os.OpenFile(f.Path, os.O_WRONLY|os.O_TRUNC, 0777)
 	defer file.Close()
 	if err != nil {
 		return err
