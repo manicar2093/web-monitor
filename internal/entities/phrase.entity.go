@@ -1,6 +1,6 @@
 package entities
 
 type Phrase struct {
-	ID     int32  `json:"id,omitempty"`
+	ID     string `json:"id,omitempty"`
 	Phrase string `json:"phrase" validate:"required"`
 }
