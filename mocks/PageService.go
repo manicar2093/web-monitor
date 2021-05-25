@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	entities "github.com/manicar2093/web-monitor/internal/entities"
+	entities "github.com/manicar2093/web-monitor/entities"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -26,57 +26,6 @@ func (_m *PageService) AddPage(page entities.Page) (entities.Page, error) {
 	var r1 error
 	if rf, ok := ret.Get(1).(func(entities.Page) error); ok {
 		r1 = rf(page)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// DeletePage provides a mock function with given fields: pageID
-func (_m *PageService) DeletePage(pageID int32) error {
-	ret := _m.Called(pageID)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(int32) error); ok {
-		r0 = rf(pageID)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// EditPage provides a mock function with given fields: data
-func (_m *PageService) EditPage(data entities.Page) error {
-	ret := _m.Called(data)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(entities.Page) error); ok {
-		r0 = rf(data)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// GetAllPages provides a mock function with given fields:
-func (_m *PageService) GetAllPages() ([]entities.Page, error) {
-	ret := _m.Called()
-
-	var r0 []entities.Page
-	if rf, ok := ret.Get(0).(func() []entities.Page); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]entities.Page)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
 	} else {
 		r1 = ret.Error(1)
 	}

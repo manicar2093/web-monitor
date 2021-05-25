@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/manicar2093/web-monitor/internal/connections"
-	"github.com/manicar2093/web-monitor/internal/entities"
+	"github.com/manicar2093/web-monitor/connections"
+	"github.com/manicar2093/web-monitor/entities"
 )
 
 var (

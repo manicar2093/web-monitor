@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/manicar2093/web-monitor/internal/controllers"
-	"github.com/manicar2093/web-monitor/internal/services"
+	"github.com/manicar2093/web-monitor/controllers"
+	"github.com/manicar2093/web-monitor/services"
 )
 
 //go:embed templates/*

@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	entities "github.com/manicar2093/web-monitor/internal/entities"
+	entities "github.com/manicar2093/web-monitor/entities"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -24,55 +24,4 @@ func (_m *PhraseService) AddPhrase(phrase entities.Phrase) error {
 	}
 
 	return r0
-}
-
-// DeletePhrase provides a mock function with given fields: phraseID
-func (_m *PhraseService) DeletePhrase(phraseID int32) error {
-	ret := _m.Called(phraseID)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(int32) error); ok {
-		r0 = rf(phraseID)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// EditPhrase provides a mock function with given fields: data
-func (_m *PhraseService) EditPhrase(data entities.Phrase) error {
-	ret := _m.Called(data)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(entities.Phrase) error); ok {
-		r0 = rf(data)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// GetAllPhrases provides a mock function with given fields:
-func (_m *PhraseService) GetAllPhrases() ([]entities.Phrase, error) {
-	ret := _m.Called()
-
-	var r0 []entities.Phrase
-	if rf, ok := ret.Get(0).(func() []entities.Phrase); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]entities.Phrase)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
 }

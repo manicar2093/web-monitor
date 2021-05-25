@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/manicar2093/web-monitor/internal/services"
+	"github.com/manicar2093/web-monitor/services"
 )
 
 type TemplateController interface {
