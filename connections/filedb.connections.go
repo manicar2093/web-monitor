@@ -23,10 +23,16 @@ func NewFileDatabase(path string) *FileDatabase {
 		log.Println("error al validar el archivo solicitado")
 		panic(err)
 	}
-	return &FileDatabase{
+	f := &FileDatabase{
 		Path: path,
 		lock: &sync.Mutex{},
 	}
+
+	err = f.writeFile([]byte("[]"))
+	if err != nil {
+		panic(err)
+	}
+	return f
 }
 
 func (f FileDatabase) ReadData(callback ReadFunc) error {
