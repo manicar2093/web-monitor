@@ -7,7 +7,13 @@ import (
 
 	"github.com/manicar2093/web-monitor/dao"
 	"github.com/manicar2093/web-monitor/entities"
+	"github.com/manicar2093/web-monitor/services"
 )
+
+type PhrassRequest struct {
+	phraseID string `json:"pageID"`
+	URL      string `json:"url"`
+}
 
 type PhraseController interface {
 	// GetAllPages regresa todas las paginas registradas
@@ -21,11 +27,12 @@ type PhraseController interface {
 }
 
 type PhraseControllerImpl struct {
-	phraseDao dao.PhraseDao
+	phraseDao     dao.PhraseDao
+	phraseService services.PhraseService
 }
 
-func NewPhraseController(phraseDao dao.PhraseDao) PhraseController {
-	return &PhraseControllerImpl{phraseDao}
+func NewPhraseController(phraseDao dao.PhraseDao, phraseService services.PhraseService) PhraseController {
+	return &PhraseControllerImpl{phraseDao, phraseService}
 }
 
 // GetAllPages regresa todas las paginas registradas
@@ -42,15 +49,15 @@ func (p PhraseControllerImpl) GetAllPhrases(w http.ResponseWriter, r *http.Reque
 
 //DeletePage se usa para eliminar una pagina
 func (p PhraseControllerImpl) DeletePhrase(w http.ResponseWriter, r *http.Request) {
-	var idPhrase string
-	err := json.NewDecoder(r.Body).Decode(&idPhrase)
+	var phraseReq PhrassRequest
+	err := json.NewDecoder(r.Body).Decode(&phraseReq)
 	if err != nil {
 		log.Printf("error al obtener ID de la frase a eliminar. Detalles: %v", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	err = p.phraseDao.Delete(idPhrase)
+	err = p.phraseDao.Delete(phraseReq.phraseID)
 	if err != nil {
 		log.Printf("error al obtener todas las frases. Detalles: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -68,7 +75,7 @@ func (p PhraseControllerImpl) AddPhrase(w http.ResponseWriter, r *http.Request) 
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	if err = p.phraseDao.Save(phrase); err != nil {
+	if err = p.phraseService.AddPhrase(phrase); err != nil {
 		log.Printf("error al guardar la frase. Detalles: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return

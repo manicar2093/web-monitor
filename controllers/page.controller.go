@@ -1,6 +1,19 @@
 package controllers
 
-import "net/http"
+import (
+	"encoding/json"
+	"log"
+	"net/http"
+
+	"github.com/manicar2093/web-monitor/dao"
+	"github.com/manicar2093/web-monitor/entities"
+	"github.com/manicar2093/web-monitor/services"
+)
+
+type PageRequest struct {
+	pageID string `json:"pageID"`
+	URL    string `json:"url"`
+}
 
 type PageController interface {
 	// GetAllPages regresa todas las paginas registradas
@@ -15,4 +28,109 @@ type PageController interface {
 	ValidatePage(w http.ResponseWriter, r *http.Request)
 	// PageExists valida si la pagina ya esta registrada
 	PageExists(w http.ResponseWriter, r *http.Request)
+}
+
+type PageControllerImpl struct {
+	pageDao     dao.PageDao
+	pageService services.PageService
+}
+
+func NewPageController(pageDao dao.PageDao, pageService services.PageService) PageController {
+	return &PageControllerImpl{pageDao, pageService}
+}
+
+// GetAllPages regresa todas las paginas registradas
+func (p PageControllerImpl) GetAllPages(w http.ResponseWriter, r *http.Request) {
+	pages, err := p.pageDao.GetAllPages()
+	if err != nil {
+		log.Printf("error al obtener todas las paginas. Detalles: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(pages)
+}
+
+//DeletePage se usa para eliminar una pagina
+func (p PageControllerImpl) DeletePage(w http.ResponseWriter, r *http.Request) {
+	pageID := r.FormValue("pageID")
+	err := p.pageDao.Delete(pageID)
+	if err != nil {
+		log.Printf("error al obtener todas las paginas. Detalles: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+// AddPage para agregar una nueva pagina
+func (p PageControllerImpl) AddPage(w http.ResponseWriter, r *http.Request) {
+	var page entities.Page
+	err := json.NewDecoder(r.Body).Decode(&page)
+	if err != nil {
+		log.Printf("error al obtener data de la pagina para guardar. Detalles: %v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if err = p.pageDao.Save(page); err != nil {
+		log.Printf("error al guardar la pagina. Detalles: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+// EditPage para editar una pagina
+func (p PageControllerImpl) EditPage(w http.ResponseWriter, r *http.Request) {
+	var page entities.Page
+	err := json.NewDecoder(r.Body).Decode(&page)
+	if err != nil {
+		log.Printf("error al obtener data de la frase a editar. Detalles: %v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if err = p.pageDao.Update(&page); err != nil {
+		log.Printf("error al guardar la frase. Detalles: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+// ValidatePage para realizar la validación individual de una pagina
+func (p PageControllerImpl) ValidatePage(w http.ResponseWriter, r *http.Request) {
+	var pageID PageRequest
+	err := json.NewDecoder(r.Body).Decode(&pageID)
+	if err != nil {
+		log.Printf("error al obtener id de la pagina. Detalles: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	panic("Not implemented") //TODO. implement
+}
+
+// PageExists valida si la pagina ya esta registrada
+func (p PageControllerImpl) PageExists(w http.ResponseWriter, r *http.Request) {
+	var pageReq PageRequest
+	err := json.NewDecoder(r.Body).Decode(&pageReq)
+	if err != nil {
+		log.Printf("error al obtener id de la pagina. Detalles: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	doExists, erro := p.pageService.PageExists(pageReq.URL)
+	if err != nil {
+		log.Printf("error determinar si la pagina ya existe. Detalles: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(map[string]bool{
+		"exists": doExists,
+	})
+	log.Println(err)
+
 }
