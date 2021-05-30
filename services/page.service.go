@@ -15,7 +15,7 @@ type PageServiceImpl struct {
 	pageDao dao.PageDao
 }
 
-func NewPageDao(pageDao dao.PageDao) PageService {
+func NewPageService(pageDao dao.PageDao) PageService {
 	return &PageServiceImpl{pageDao: pageDao}
 }
 

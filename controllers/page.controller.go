@@ -72,7 +72,7 @@ func (p PageControllerImpl) AddPage(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	if err = p.pageDao.Save(page); err != nil {
+	if _, err = p.pageService.AddPage(page); err != nil {
 		log.Printf("error al guardar la pagina. Detalles: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -121,16 +121,15 @@ func (p PageControllerImpl) PageExists(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	doExists, erro := p.pageService.PageExists(pageReq.URL)
+	doExists, err := p.pageService.PageExists(pageReq.URL)
 	if err != nil {
 		log.Printf("error determinar si la pagina ya existe. Detalles: %v\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	err = json.NewEncoder(w).Encode(map[string]bool{
+	json.NewEncoder(w).Encode(map[string]bool{
 		"exists": doExists,
 	})
-	log.Println(err)
 
 }
