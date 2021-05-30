@@ -43,10 +43,16 @@ func (p PhraseDaoImpl) Delete(phraseID string) error {
 		}
 
 		var newDB []entities.Phrase
+		var rewrite bool
 		for _, v := range phrases {
 			if v.ID != phraseID {
 				newDB = append(newDB, v)
+			} else {
+				rewrite = true
 			}
+		}
+		if len(phrases) == 1 && rewrite {
+			return string("[]"), err
 		}
 		d, err := json.Marshal(&newDB)
 		return string(d), err

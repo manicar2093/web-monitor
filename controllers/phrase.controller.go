@@ -10,8 +10,8 @@ import (
 	"github.com/manicar2093/web-monitor/services"
 )
 
-type PhrassRequest struct {
-	phraseID string `json:"pageID"`
+type PhraseRequest struct {
+	PhraseID string `json:"id"`
 	URL      string `json:"url"`
 }
 
@@ -49,7 +49,7 @@ func (p PhraseControllerImpl) GetAllPhrases(w http.ResponseWriter, r *http.Reque
 
 //DeletePage se usa para eliminar una pagina
 func (p PhraseControllerImpl) DeletePhrase(w http.ResponseWriter, r *http.Request) {
-	var phraseReq PhrassRequest
+	var phraseReq PhraseRequest
 	err := json.NewDecoder(r.Body).Decode(&phraseReq)
 	if err != nil {
 		log.Printf("error al obtener ID de la frase a eliminar. Detalles: %v", err)
@@ -57,7 +57,7 @@ func (p PhraseControllerImpl) DeletePhrase(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	err = p.phraseDao.Delete(phraseReq.phraseID)
+	err = p.phraseDao.Delete(phraseReq.PhraseID)
 	if err != nil {
 		log.Printf("error al obtener todas las frases. Detalles: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)

@@ -51,10 +51,16 @@ func (p PageDaoImpl) Delete(pageID string) error {
 		}
 
 		var newDB []entities.Page
+		var rewrite bool
 		for _, v := range pages {
 			if v.ID != pageID {
 				newDB = append(newDB, v)
+			} else {
+				rewrite = true
 			}
+		}
+		if len(pages) == 1 && rewrite {
+			return string("[]"), err
 		}
 		d, err := json.Marshal(&newDB)
 		return string(d), err

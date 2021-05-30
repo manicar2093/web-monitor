@@ -18,7 +18,7 @@ type ReadFunc func(data string) error
 type SaveFunc func(data string) (string, error)
 
 func NewFileDatabase(path string) *FileDatabase {
-	err := validatePathExists(path)
+	exists, err := validatePathExists(path)
 	if err != nil {
 		log.Println("error al validar el archivo solicitado")
 		panic(err)
@@ -28,10 +28,13 @@ func NewFileDatabase(path string) *FileDatabase {
 		lock: &sync.Mutex{},
 	}
 
-	err = f.writeFile([]byte("[]"))
-	if err != nil {
-		panic(err)
+	if !exists {
+		err = f.writeFile([]byte("[]"))
+		if err != nil {
+			panic(err)
+		}
 	}
+
 	return f
 }
 
@@ -93,11 +96,20 @@ func (f FileDatabase) writeFile(data []byte) error {
 	return nil
 }
 
-func validatePathExists(path string) error {
+// validatePathExists valida si el archivo exisita antes de crearlo
+func validatePathExists(path string) (exists bool, err error) {
+
+	_, err = os.Stat(path)
+	// El file no existe el retorno debe ser true para mejorar la lectura de esta funcion
+	if exists = !os.IsNotExist(err); exists {
+		return
+	}
+
 	file, err := os.Create(path)
 	defer file.Close()
+
 	if err != nil {
-		return err
+		return
 	}
-	return nil
+	return
 }

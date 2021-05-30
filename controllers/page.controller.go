@@ -11,7 +11,7 @@ import (
 )
 
 type PageRequest struct {
-	pageID string `json:"pageID"`
+	PageID string `json:"id"`
 	URL    string `json:"url"`
 }
 
@@ -53,8 +53,14 @@ func (p PageControllerImpl) GetAllPages(w http.ResponseWriter, r *http.Request) 
 
 //DeletePage se usa para eliminar una pagina
 func (p PageControllerImpl) DeletePage(w http.ResponseWriter, r *http.Request) {
-	pageID := r.FormValue("pageID")
-	err := p.pageDao.Delete(pageID)
+	var pageReq PageRequest
+	err := json.NewDecoder(r.Body).Decode(&pageReq)
+	if err != nil {
+		log.Printf("error al obtener id de la pagina. Detalles: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	err = p.pageDao.Delete(pageReq.PageID)
 	if err != nil {
 		log.Printf("error al obtener todas las paginas. Detalles: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
