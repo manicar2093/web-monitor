@@ -15,6 +15,9 @@ import (
 
 //go:embed templates/*
 var tpl embed.FS
+
+//go:embed static/*
+var static embed.FS
 var phraseDao dao.PhraseDao
 var pageDao dao.PageDao
 
@@ -33,6 +36,8 @@ func main() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/", controller.IndexPage).Methods(http.MethodGet)
+
+	router.PathPrefix("/static/").Handler(http.FileServer(http.FS(static)))
 
 	phraseRouter := router.PathPrefix("/phrases").Subrouter()
 	phraseRouter.HandleFunc("/add", phraseController.AddPhrase).Methods(http.MethodPost)
