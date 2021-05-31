@@ -67,6 +67,7 @@ func (v ValidatorServiceImpl) validatePages() {
 			v.pagesDao.Update(&d)
 			continue
 		}
+		// TODO: agregar distintivo cuando camba status de false a true
 
 		d.Status = true
 		v.pagesDao.Update(&d)
