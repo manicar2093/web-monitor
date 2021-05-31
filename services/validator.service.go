@@ -14,7 +14,7 @@ import (
 type Notification struct {
 	PageID     string `json:"pageID"`
 	Error      string `json:"error"`
-	StatusCode int    `json:"status_code, omitempty"`
+	StatusCode int    `json:"status_code,omitempty"`
 	Cause      string `json:"cause"`
 }
 
