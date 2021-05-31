@@ -78,7 +78,7 @@ func (broker *Broker) listen() {
 }
 
 func (t Broker) Notify(data interface{}) {
-	e, j := json.Marshal(data)
+	j, e := json.Marshal(data)
 	if e != nil {
 		log.Printf("error al parsear respuesta. Detalles: %v\n", e)
 		return

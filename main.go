@@ -10,6 +10,7 @@ import (
 	"github.com/manicar2093/web-monitor/controllers"
 	"github.com/manicar2093/web-monitor/dao"
 	"github.com/manicar2093/web-monitor/services"
+	"github.com/manicar2093/web-monitor/sse"
 )
 
 //go:embed templates/*
@@ -20,10 +21,12 @@ var pageDao dao.PageDao
 var templateService services.TemplateService
 var phraseService services.PhraseService
 var pageService services.PageService
+var validatorService services.ValidatorService
 
 var controller controllers.TemplateController
 var phraseController controllers.PhraseController
 var pageController controllers.PageController
+var sseValidatorController *sse.Broker
 
 func main() {
 
@@ -45,6 +48,9 @@ func main() {
 	pageRouter.HandleFunc("/do-exists", pageController.PageExists).Methods(http.MethodGet)
 	pageRouter.HandleFunc("/validate", pageController.ValidatePage).Methods(http.MethodGet)
 
+	sseRouter := router.PathPrefix("/sse").Subrouter()
+	sseRouter.Handle("/sse-validator", sseValidatorController).Methods(http.MethodGet)
+
 	log.Fatal("Error al iniciar servidor: ", http.ListenAndServe(":7890", router))
 
 }
@@ -63,4 +69,7 @@ func init() {
 	controller = controllers.NewTemplateController(templateService)
 	phraseController = controllers.NewPhraseController(phraseDao, phraseService)
 	pageController = controllers.NewPageController(pageDao, pageService)
+	sseValidatorController = sse.NewBroker()
+
+	validatorService = services.NewValidatorService(5, pageDao, sseValidatorController)
 }

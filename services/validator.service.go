@@ -52,14 +52,16 @@ func (v ValidatorServiceImpl) validatePages() {
 	if err != nil {
 		panic(err)
 	}
-	log.Println(pages)
+
+	if len(pages) == 0 {
+		log.Println("Sin paginas para validar. Termina proceso")
+		return
+	}
+
 	for _, d := range pages {
-		log.Println("validando", d.Name)
 		res, err := v.client.Get(d.URL)
-		log.Println(res)
 
 		if err != nil || res.StatusCode != http.StatusOK {
-			log.Println("Error ", err, " en", d.Name)
 			v.notifyAll(&Notification{PageID: d.ID, Error: err.Error(), Cause: "Error on client :/"})
 			d.Status = false
 			v.pagesDao.Update(&d)
