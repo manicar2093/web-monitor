@@ -9,428 +9,302 @@
     <title>Web Monitor</title>
   </head>
   <body>
-    <div class="modal" id="page_admin">
-      <div class="modal-background"></div>
-      <div class="modal-content is-large card">
-        <div class="hero is-small is-info">
-          <div class="hero-body">
-            <h2 class="title">Registra una página</h2>
-            <p class="subtitle">Dinos que página quieres que revisemos</p>
+    <div id="app">
+      <div class="modal" id="page_admin">
+        <div class="modal-background"></div>
+        <div class="modal-content is-large card">
+          <div class="hero is-small is-info">
+            <div class="hero-body">
+              <h2 class="title">Registra una página</h2>
+              <p class="subtitle">Dinos que página quieres que revisemos</p>
+            </div>
+          </div>
+          <div class="columns is-multiline">
+            <div class="column">
+              <form class="hero" action="#">
+                <div class="hero-body">
+                  <div class="field">
+                    <label class="label" for="page_name">Nombre</label>
+                    <div class="control">
+                      <input class="input" id="page_name" type="text">
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="page_url">URL</label>
+                    <div class="control">
+                      <input class="input" id="page_url" type="url">
+                    </div>
+                  </div>
+                  <div class="field is-grouped">
+                    <div class="control">
+                      <button class="button is-success">Guardar</button>
+                    </div>
+                    <div class="control">
+                      <button class="button is-warning">Limpiar</button>
+                    </div>
+                    <div class="control">
+                      <button class="button is-danger">Cancelar</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="column">
+              <h3 class="is-size-3 has-text-centered">Registrados</h3>
+              <div class="registries registries--small">
+                <div class="registry">
+                  <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
+                  <div class="registry__actions">
+                    <button class="button is-danger">Eliminar</button>
+                    <button class="button is-warning">Editar</button>
+                  </div>
+                </div>
+                <div class="registry">
+                  <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
+                  <div class="registry__actions">
+                    <button class="button is-danger">Eliminar</button>
+                    <button class="button is-warning">Editar</button>
+                  </div>
+                </div>
+                <div class="registry">
+                  <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
+                  <div class="registry__actions">
+                    <button class="button is-danger">Eliminar</button>
+                    <button class="button is-warning">Editar</button>
+                  </div>
+                </div>
+                <div class="registry">
+                  <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
+                  <div class="registry__actions">
+                    <button class="button is-danger">Eliminar</button>
+                    <button class="button is-warning">Editar</button>
+                  </div>
+                </div>
+                <div class="registry">
+                  <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
+                  <div class="registry__actions">
+                    <button class="button is-danger">Eliminar</button>
+                    <button class="button is-warning">Editar</button>
+                  </div>
+                </div>
+                <div class="registry">
+                  <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
+                  <div class="registry__actions">
+                    <button class="button is-danger">Eliminar</button>
+                    <button class="button is-warning">Editar</button>
+                  </div>
+                </div>
+                <div class="registry">
+                  <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
+                  <div class="registry__actions">
+                    <button class="button is-danger">Eliminar</button>
+                    <button class="button is-warning">Editar</button>
+                  </div>
+                </div>
+                <div class="registry">
+                  <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
+                  <div class="registry__actions">
+                    <button class="button is-danger">Eliminar</button>
+                    <button class="button is-warning">Editar</button>
+                  </div>
+                </div>
+                <div class="registry">
+                  <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
+                  <div class="registry__actions">
+                    <button class="button is-danger">Eliminar</button>
+                    <button class="button is-warning">Editar</button>
+                  </div>
+                </div>
+                <div class="registry">
+                  <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
+                  <div class="registry__actions">
+                    <button class="button is-danger">Eliminar</button>
+                    <button class="button is-warning">Editar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="columns is-multiline">
+      </div>
+      <div class="modal" id="phrase_admin">
+        <div class="modal-background"></div>
+        <div class="modal-content is-large card">
+          <div class="hero is-small is-info">
+            <div class="hero-body">
+              <h2 class="title">Registra una frase</h2>
+              <p class="subtitle">¿Cómo te avisamos que algo sucedió? :O</p>
+            </div>
+          </div>
+          <div class="columns is-multiline">
+            <div class="column">
+              <form class="hero" action="#">
+                <div class="hero-body">
+                  <div class="field">
+                    <label class="label" for="phrase">Frase</label>
+                    <div class="control">
+                      <input class="input" id="phrase" type="text">
+                    </div>
+                  </div>
+                  <div class="field is-grouped">
+                    <div class="control">
+                      <button class="button is-success">Guardar</button>
+                    </div>
+                    <div class="control">
+                      <button class="button is-warning">Limpiar</button>
+                    </div>
+                    <div class="control">
+                      <button class="button is-danger">Cancelar</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="column">
+              <h3 class="is-size-3 has-text-centered">Frases Registradas</h3>
+              <div class="registries registries--small">
+                <div class="registry">
+                  <div class="registry__page_name">Nombre de la pagina :O</div>
+                  <div class="registry__actions">
+                    <button class="button is-danger">Eliminar</button>
+                    <button class="button is-warning">Editar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hero is-link"> 
+        <div class="hero-body">
+          <h1 class="title is-size-1">Web Monitor</h1>
+          <p class="subtitle is-size-6">Atento a cuando internet se cae.</p>
+        </div>
+      </div>
+      <div class="navbar mb-5">
+        <div class="container">
+          <div class="navbar-brand">
+            <div class="navbar-burger" role="button" data-target="mainMenu" aria-label="menu" aria-expanded="false"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></div>
+          </div>
+          <div class="navbar-menu" id="mainMenu">
+            <div class="navbar-end">
+              <div class="navbar-item">
+                <button class="is-medium button is-info is-light" id="fire_page_admin" title="Agregar Página" data-target="page_admin"><span class="icon"><i class="fa fa-globe"></i></span><span>Administrar Páginas</span></button>
+              </div>
+              <div class="navbar-item">
+                <button class="is-medium button is-info is-light" id="fire_phrase_admin" title="Agregar Frase" data-target="phrase_admin"><span class="icon"><i class="fa fa-pencil"></i></span><span>Administar Frases</span></button>
+              </div>
+              <div class="navbar-divider"></div>
+              <div class="navbar-item is-hidden-desktop">
+                <button class="is-medium button is-success is-light" title="Agregar Frase"><span class="icon"><i class="fa fa-pencil"></i></span><span>Mostrar solo en servicio</span></button>
+              </div>
+              <div class="navbar-item is-hidden-desktop">
+                <button class="is-medium button is-danger is-light" title="Agregar Frase"><span class="icon"><i class="fa fa-pencil"></i></span><span>Mostrar solo fuera de servicio</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container" v-if="notifications_accepted">
+        <div class="columns has-text-centered">
           <div class="column">
-            <form class="hero" action="#">
-              <div class="hero-body">
-                <div class="field">
-                  <label class="label" for="page_name">Nombre</label>
-                  <div class="control">
-                    <input class="input" id="page_name" type="text">
-                  </div>
-                </div>
-                <div class="field">
-                  <label class="label" for="page_url">URL</label>
-                  <div class="control">
-                    <input class="input" id="page_url" type="url">
-                  </div>
-                </div>
-                <div class="field is-grouped">
-                  <div class="control">
-                    <button class="button is-success">Guardar</button>
-                  </div>
-                  <div class="control">
-                    <button class="button is-warning">Limpiar</button>
-                  </div>
-                  <div class="control">
-                    <button class="button is-danger">Cancelar</button>
-                  </div>
-                </div>
+            <h3 class="is-size-3">En servicio</h3>
+            <div class="registries registries--medium">
+              <div v-if="getActivedPages().lenght == 0" class="has-text-centered mt-5">
+                <p>Sin paginas registradas</p>
               </div>
-            </form>
+              <registry v-for="item in getActivedPages"
+                :key="item.id"
+                type ="up"
+                :page_name="item.name"
+                :url="item.url" >
+              </registry>
+            </div>
           </div>
           <div class="column">
-            <h3 class="is-size-3 has-text-centered">Registrados</h3>
-            <div class="registries registries--small">
-              <div class="registry">
-                <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-                <div class="registry__actions">
-                  <button class="button is-danger">Eliminar</button>
-                  <button class="button is-warning">Editar</button>
-                </div>
+            <h3 class="is-size-3">Fuera de servicio</h3>
+            <div class="registries registries--medium">
+              <div v-if="getUnactivedPages().lenght == 0" class="has-text-centered mt-5">
+                <p>Sin paginas fuera de servicio</p>
               </div>
-              <div class="registry">
-                <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-                <div class="registry__actions">
-                  <button class="button is-danger">Eliminar</button>
-                  <button class="button is-warning">Editar</button>
-                </div>
-              </div>
-              <div class="registry">
-                <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-                <div class="registry__actions">
-                  <button class="button is-danger">Eliminar</button>
-                  <button class="button is-warning">Editar</button>
-                </div>
-              </div>
-              <div class="registry">
-                <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-                <div class="registry__actions">
-                  <button class="button is-danger">Eliminar</button>
-                  <button class="button is-warning">Editar</button>
-                </div>
-              </div>
-              <div class="registry">
-                <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-                <div class="registry__actions">
-                  <button class="button is-danger">Eliminar</button>
-                  <button class="button is-warning">Editar</button>
-                </div>
-              </div>
-              <div class="registry">
-                <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-                <div class="registry__actions">
-                  <button class="button is-danger">Eliminar</button>
-                  <button class="button is-warning">Editar</button>
-                </div>
-              </div>
-              <div class="registry">
-                <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-                <div class="registry__actions">
-                  <button class="button is-danger">Eliminar</button>
-                  <button class="button is-warning">Editar</button>
-                </div>
-              </div>
-              <div class="registry">
-                <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-                <div class="registry__actions">
-                  <button class="button is-danger">Eliminar</button>
-                  <button class="button is-warning">Editar</button>
-                </div>
-              </div>
-              <div class="registry">
-                <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-                <div class="registry__actions">
-                  <button class="button is-danger">Eliminar</button>
-                  <button class="button is-warning">Editar</button>
-                </div>
-              </div>
-              <div class="registry">
-                <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-                <div class="registry__actions">
-                  <button class="button is-danger">Eliminar</button>
-                  <button class="button is-warning">Editar</button>
-                </div>
-              </div>
+              <registry v-for="item in getUnactivedPages"
+                :key="item.id"
+                :type ="item.type"
+                :page_name="item.name"
+                :url="item.url" >
+              </registry>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="modal" id="phrase_admin">
-      <div class="modal-background"></div>
-      <div class="modal-content is-large card">
-        <div class="hero is-small is-info">
-          <div class="hero-body">
-            <h2 class="title">Registra una frase</h2>
-            <p class="subtitle">¿Cómo te avisamos que algo sucedió? :O</p>
-          </div>
-        </div>
-        <div class="columns is-multiline">
-          <div class="column">
-            <form class="hero" action="#">
-              <div class="hero-body">
-                <div class="field">
-                  <label class="label" for="phrase">Frase</label>
-                  <div class="control">
-                    <input class="input" id="phrase" type="text">
-                  </div>
-                </div>
-                <div class="field is-grouped">
-                  <div class="control">
-                    <button class="button is-success">Guardar</button>
-                  </div>
-                  <div class="control">
-                    <button class="button is-warning">Limpiar</button>
-                  </div>
-                  <div class="control">
-                    <button class="button is-danger">Cancelar</button>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="column">
-            <h3 class="is-size-3 has-text-centered">Frases Registradas</h3>
-            <div class="registries registries--small">
-              <div class="registry">
-                <div class="registry__page_name">Nombre de la pagina :O</div>
-                <div class="registry__actions">
-                  <button class="button is-danger">Eliminar</button>
-                  <button class="button is-warning">Editar</button>
-                </div>
-              </div>
-            </div>
-          </div>
+      <div class="container" v-else>
+        <div class="card has-text-centered">
+          <h1 class="is-size-1 ">
+            Sin permiso para notificaciones
+          </h1>
+          <p class="mt-5">
+            Debes aceptar los permisos para enviar notificaciones para que la app funcione correctamente.
+          </p>
         </div>
       </div>
+      <footer class="footer footer--center">
+        <p class="subtitle">Created by <span class="bold">@manicar2093</span></p>
+      </footer>
     </div>
-    <div class="hero is-link"> 
-      <div class="hero-body">
-        <h1 class="title is-size-1">Web Monitor</h1>
-        <p class="subtitle is-size-6">Atento a cuando internet se cae.</p>
-      </div>
-    </div>
-    <div class="navbar mb-5">
-      <div class="container">
-        <div class="navbar-brand">
-          <div class="navbar-burger" role="button" data-target="mainMenu" aria-label="menu" aria-expanded="false"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></div>
-        </div>
-        <div class="navbar-menu" id="mainMenu">
-          <div class="navbar-end">
-            <div class="navbar-item">
-              <button class="is-medium button is-info is-light" id="fire_page_admin" title="Agregar Página" data-target="page_admin"><span class="icon"><i class="fa fa-globe"></i></span><span>Administrar Páginas</span></button>
-            </div>
-            <div class="navbar-item">
-              <button class="is-medium button is-info is-light" id="fire_phrase_admin" title="Agregar Frase" data-target="phrase_admin"><span class="icon"><i class="fa fa-pencil"></i></span><span>Administar Frases</span></button>
-            </div>
-            <div class="navbar-divider"></div>
-            <div class="navbar-item is-hidden-desktop">
-              <button class="is-medium button is-success is-light" title="Agregar Frase"><span class="icon"><i class="fa fa-pencil"></i></span><span>Mostrar solo en servicio</span></button>
-            </div>
-            <div class="navbar-item is-hidden-desktop">
-              <button class="is-medium button is-danger is-light" title="Agregar Frase"><span class="icon"><i class="fa fa-pencil"></i></span><span>Mostrar solo fuera de servicio</span></button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="container">
-      <div class="columns has-text-centered">
-        <div class="column">
-          <h3 class="is-size-3">En servicio</h3>
-          <div class="registries registries--medium">
-            <div class="registry registry--up">
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-            </div>
-            <div class="registry registry--up">
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-            </div>
-            <div class="registry registry--up">
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-            </div>
-            <div class="registry registry--up">
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-            </div>
-            <div class="registry registry--up">
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-            </div>
-            <div class="registry registry--up">
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-            </div>
-            <div class="registry registry--up">
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-            </div>
-            <div class="registry registry--up">
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-            </div>
-            <div class="registry registry--up">
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-            </div>
-            <div class="registry registry--up">
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-            </div>
-          </div>
-        </div>
-        <div class="column">
-          <h3 class="is-size-3">Fuera de servicio</h3>
-          <div class="registries registries--medium">
-            <div class="registry registry--down">
-              <div class="registry__time">
-                <p>00:00:00</p>
-              </div>
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-              <div class="registry__actions">
-                <button class="button is-info" title="Revisamos el status de la página">Actualizar</button>
-              </div>
-            </div>
-            <div class="registry registry--recovered">
-              <div class="registry__time">
-                <p>00:10:33</p>
-              </div>
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-              <div class="registry__actions">
-                <button class="button is-warning" title="Pasemos el registro a 'En servicio'">Confirmar</button>
-              </div>
-            </div>
-            <div class="registry registry--down">
-              <div class="registry__time">
-                <p>00:00:00</p>
-              </div>
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-              <div class="registry__actions">
-                <button class="button is-info" title="Revisamos el status de la página">Actualizar</button>
-              </div>
-            </div>
-            <div class="registry registry--recovered">
-              <div class="registry__time">
-                <p>00:10:33</p>
-              </div>
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-              <div class="registry__actions">
-                <button class="button is-warning" title="Pasemos el registro a 'En servicio'">Confirmar</button>
-              </div>
-            </div>
-            <div class="registry registry--down">
-              <div class="registry__time">
-                <p>00:00:00</p>
-              </div>
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-              <div class="registry__actions">
-                <button class="button is-info" title="Revisamos el status de la página">Actualizar</button>
-              </div>
-            </div>
-            <div class="registry registry--recovered">
-              <div class="registry__time">
-                <p>00:10:33</p>
-              </div>
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-              <div class="registry__actions">
-                <button class="button is-warning" title="Pasemos el registro a 'En servicio'">Confirmar</button>
-              </div>
-            </div>
-            <div class="registry registry--down">
-              <div class="registry__time">
-                <p>00:00:00</p>
-              </div>
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-              <div class="registry__actions">
-                <button class="button is-info" title="Revisamos el status de la página">Actualizar</button>
-              </div>
-            </div>
-            <div class="registry registry--recovered">
-              <div class="registry__time">
-                <p>00:10:33</p>
-              </div>
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-              <div class="registry__actions">
-                <button class="button is-warning" title="Pasemos el registro a 'En servicio'">Confirmar</button>
-              </div>
-            </div>
-            <div class="registry registry--down">
-              <div class="registry__time">
-                <p>00:00:00</p>
-              </div>
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-              <div class="registry__actions">
-                <button class="button is-info" title="Revisamos el status de la página">Actualizar</button>
-              </div>
-            </div>
-            <div class="registry registry--recovered">
-              <div class="registry__time">
-                <p>00:10:33</p>
-              </div>
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-              <div class="registry__actions">
-                <button class="button is-warning" title="Pasemos el registro a 'En servicio'">Confirmar</button>
-              </div>
-            </div>
-            <div class="registry registry--down">
-              <div class="registry__time">
-                <p>00:00:00</p>
-              </div>
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-              <div class="registry__actions">
-                <button class="button is-info" title="Revisamos el status de la página">Actualizar</button>
-              </div>
-            </div>
-            <div class="registry registry--recovered">
-              <div class="registry__time">
-                <p>00:10:33</p>
-              </div>
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-              <div class="registry__actions">
-                <button class="button is-warning" title="Pasemos el registro a 'En servicio'">Confirmar</button>
-              </div>
-            </div>
-            <div class="registry registry--down">
-              <div class="registry__time">
-                <p>00:00:00</p>
-              </div>
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-              <div class="registry__actions">
-                <button class="button is-info" title="Revisamos el status de la página">Actualizar</button>
-              </div>
-            </div>
-            <div class="registry registry--recovered">
-              <div class="registry__time">
-                <p>00:10:33</p>
-              </div>
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-              <div class="registry__actions">
-                <button class="button is-warning" title="Pasemos el registro a 'En servicio'">Confirmar</button>
-              </div>
-            </div>
-            <div class="registry registry--down">
-              <div class="registry__time">
-                <p>00:00:00</p>
-              </div>
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-              <div class="registry__actions">
-                <button class="button is-info" title="Revisamos el status de la página">Actualizar</button>
-              </div>
-            </div>
-            <div class="registry registry--recovered">
-              <div class="registry__time">
-                <p>00:10:33</p>
-              </div>
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-              <div class="registry__actions">
-                <button class="button is-warning" title="Pasemos el registro a 'En servicio'">Confirmar</button>
-              </div>
-            </div>
-            <div class="registry registry--down">
-              <div class="registry__time">
-                <p>00:00:00</p>
-              </div>
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-              <div class="registry__actions">
-                <button class="button is-info" title="Revisamos el status de la página">Actualizar</button>
-              </div>
-            </div>
-            <div class="registry registry--recovered">
-              <div class="registry__time">
-                <p>00:10:33</p>
-              </div>
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-              <div class="registry__actions">
-                <button class="button is-warning" title="Pasemos el registro a 'En servicio'">Confirmar</button>
-              </div>
-            </div>
-            <div class="registry registry--down">
-              <div class="registry__time">
-                <p>00:00:00</p>
-              </div>
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-              <div class="registry__actions">
-                <button class="button is-info" title="Revisamos el status de la página">Actualizar</button>
-              </div>
-            </div>
-            <div class="registry registry--recovered">
-              <div class="registry__time">
-                <p>00:10:33</p>
-              </div>
-              <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-              <div class="registry__actions">
-                <button class="button is-warning" title="Pasemos el registro a 'En servicio'">Confirmar</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <footer class="footer footer--center">
-      <p class="subtitle">Created by <span class="bold">@manicar2093</span></p>
-    </footer>
-    <script src="/static/js/script.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script>
+      const app = new Vue({
+        el: "#app",
+        delimiters: ['[[', ']]'],
+        data: {
+          pages: [],
+          phrases: [],
+          notifications_accepted: false,
+          greet: "Hello from vue"
+        },
+        methods: {
+          async requestNotificationsPermissions() {
+            const messageNegative = "Los permisos son necesarios para la aplicación" 
+            const result = await Notification.requestPermission()
+
+            switch (result) {
+              case "default":
+                alert(messageNegative)
+                await this.requestNotificationsPermissions()
+                break
+              case "denied":
+                alert(messageNegative)
+                break
+              case "granted":
+                alert("Muchas gracias. Disfruta la aplicación")
+                this.notifications_accepted = true
+                break
+            }
+          },
+          async getPages() {
+            const data = await fetch('/pages/all')
+            this.pages = data.json()
+          },
+          async getPhrases() {
+            const data = await fetch('/phrases/all')
+            this.phrases = data.json()
+          }
+        },
+        computed: {
+          getUnactivedPages() {
+            return this.pages.filter(i => i.status == false)
+          },
+          getActivedPages() {
+            return this.pages.filter(i => i.status == true)
+          }
+        }
+        async created() {
+            await this.requestNotificationsPermissions()
+            await this.getPages()
+        }
+      })
+      
+    </script>
   </body>
 </html>
