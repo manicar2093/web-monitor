@@ -43,7 +43,9 @@ func NewValidatorService(minutes int, pagesDao dao.PageDao, observers ...models.
 // ValidatePages valida las paginas. Al haber error realiza el panic
 func (v ValidatorServiceImpl) Start() {
 	v._cron.Every(v.Minutes).Seconds().Tag("validator").Do(v.validatePages)
-	v._cron.StartAsync()
+	go func() {
+		v._cron.StartBlocking()
+	}()
 }
 
 func (v ValidatorServiceImpl) validatePages() {
@@ -60,9 +62,27 @@ func (v ValidatorServiceImpl) validatePages() {
 
 	for _, d := range pages {
 		res, err := v.client.Get(d.URL)
+		log.Println("Response from", d.URL, ":", res)
+		// TODO: distinguir cuando regresa un 429 Too Many Requests para excluirlo por un determinado tiempo
+		if err != nil {
+			v.notifyAll(
+				&Notification{
+					PageID: d.ID,
+					Error:  err.Error(),
+					Cause:  "Error on client :/",
+				})
+			d.Status = false
+			v.pagesDao.Update(&d)
+			continue
+		}
 
-		if err != nil || res.StatusCode != http.StatusOK {
-			v.notifyAll(&Notification{PageID: d.ID, Error: err.Error(), Cause: "Error on client :/"})
+		if res.StatusCode != http.StatusOK {
+			v.notifyAll(
+				&Notification{
+					PageID: d.ID,
+					Error:  "Calling to URL wasn't success",
+					Cause:  "No 200 status code",
+				})
 			d.Status = false
 			v.pagesDao.Update(&d)
 			continue
