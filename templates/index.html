@@ -10,7 +10,7 @@
   </head>
   <body>
     <div id="app">
-      <div class="modal" id="page_admin">
+      <div class="modal" ref="page_admin">
         <div class="modal-background"></div>
         <div class="modal-content is-large card">
           <div class="hero is-small is-info">
@@ -127,7 +127,7 @@
           </div>
         </div>
       </div>
-      <div class="modal" id="phrase_admin">
+      <div class="modal" ref="phrase_admin">
         <div class="modal-background"></div>
         <div class="modal-content is-large card">
           <div class="hero is-small is-info">
@@ -189,10 +189,10 @@
           <div class="navbar-menu" id="mainMenu">
             <div class="navbar-end">
               <div class="navbar-item">
-                <button class="is-medium button is-info is-light" id="fire_page_admin" title="Agregar Página" data-target="page_admin"><span class="icon"><i class="fa fa-globe"></i></span><span>Administrar Páginas</span></button>
+                <button class="is-medium button is-info is-light" id="fire_page_admin" title="Agregar Página" data-target="page_admin" @click="show('page_admin')"><span class="icon"><i class="fa fa-globe"></i></span><span>Administrar Páginas</span></button>
               </div>
               <div class="navbar-item">
-                <button class="is-medium button is-info is-light" id="fire_phrase_admin" title="Agregar Frase" data-target="phrase_admin"><span class="icon"><i class="fa fa-pencil"></i></span><span>Administar Frases</span></button>
+                <button class="is-medium button is-info is-light" id="fire_phrase_admin" title="Agregar Frase" data-target="phrase_admin" @click="show('phrase_admin')"><span class="icon"><i class="fa fa-pencil"></i></span><span>Administar Frases</span></button>
               </div>
               <div class="navbar-divider"></div>
               <div class="navbar-item is-hidden-desktop">
@@ -210,7 +210,7 @@
           <div class="column">
             <h3 class="is-size-3">En servicio</h3>
             <div class="registries registries--medium">
-              <div v-if="getActivedPages().lenght == 0" class="has-text-centered mt-5">
+              <div v-if="getActivedPages.lenght == 0" class="has-text-centered mt-5">
                 <p>Sin paginas registradas</p>
               </div>
               <registry v-for="item in getActivedPages"
@@ -224,7 +224,7 @@
           <div class="column">
             <h3 class="is-size-3">Fuera de servicio</h3>
             <div class="registries registries--medium">
-              <div v-if="getUnactivedPages().lenght == 0" class="has-text-centered mt-5">
+              <div v-if="getUnactivedPages.lenght == 0" class="has-text-centered mt-5">
                 <p>Sin paginas fuera de servicio</p>
               </div>
               <registry v-for="item in getUnactivedPages"
@@ -277,28 +277,33 @@
                 alert(messageNegative)
                 break
               case "granted":
-                alert("Muchas gracias. Disfruta la aplicación")
                 this.notifications_accepted = true
                 break
             }
           },
           async getPages() {
             const data = await fetch('/pages/all')
-            this.pages = data.json()
+            this.pages = await data.json()
           },
           async getPhrases() {
             const data = await fetch('/phrases/all')
-            this.phrases = data.json()
+            this.phrases = await data.json()
+          },
+          show(data) {
+            this.$refs[data].classList.toggle("is-active")
+            console.log(this.$refs[data].classList)
           }
         },
         computed: {
           getUnactivedPages() {
-            return this.pages.filter(i => i.status == false)
+            let pages = this.pages.filter(i => i.status == false)
+            pages.forEach(i => i.type = "down")
+            return pages
           },
           getActivedPages() {
             return this.pages.filter(i => i.status == true)
           }
-        }
+        },
         async created() {
             await this.requestNotificationsPermissions()
             await this.getPages()
@@ -306,5 +311,6 @@
       })
       
     </script>
+    <script src="/static/js/components/registry.js"></script>
   </body>
 </html>
