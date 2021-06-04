@@ -26,24 +26,24 @@
                   <div class="field">
                     <label class="label" for="page_name">Nombre</label>
                     <div class="control">
-                      <input class="input" id="page_name" type="text">
+                      <input class="input" id="page_name" type="text" v-model="registerPageForm.name">
                     </div>
                   </div>
                   <div class="field">
                     <label class="label" for="page_url">URL</label>
                     <div class="control">
-                      <input class="input" id="page_url" type="url">
+                      <input class="input" id="page_url" type="url" v-model="registerPageForm.url">
                     </div>
                   </div>
                   <div class="field is-grouped">
                     <div class="control">
-                      <button class="button is-success">Guardar</button>
+                      <button class="button is-success" @click="createPage">Guardar</button>
                     </div>
                     <div class="control">
-                      <button class="button is-warning">Limpiar</button>
+                      <button class="button is-warning" @click="clearForm('registerPageForm')">Limpiar</button>
                     </div>
                     <div class="control">
-                      <button class="button is-danger">Cancelar</button>
+                      <button class="button is-danger" @click="show('page_admin')">Cancelar</button>
                     </div>
                   </div>
                 </div>
@@ -52,76 +52,20 @@
             <div class="column">
               <h3 class="is-size-3 has-text-centered">Registrados</h3>
               <div class="registries registries--small">
-                <div class="registry">
-                  <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-                  <div class="registry__actions">
-                    <button class="button is-danger">Eliminar</button>
-                    <button class="button is-warning">Editar</button>
-                  </div>
+
+                <div v-if="pages.length == 0" class="has-text-centered mt-5">
+                  <p>Sin paginas registradas</p>
                 </div>
-                <div class="registry">
-                  <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-                  <div class="registry__actions">
-                    <button class="button is-danger">Eliminar</button>
-                    <button class="button is-warning">Editar</button>
-                  </div>
+
+                <div v-else>
+                  <registry v-for="item in pages"
+                    :key="item.id"
+                    type ="page"
+                    :data="item"
+                    :show_options="true">
+                  </registry>
                 </div>
-                <div class="registry">
-                  <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-                  <div class="registry__actions">
-                    <button class="button is-danger">Eliminar</button>
-                    <button class="button is-warning">Editar</button>
-                  </div>
-                </div>
-                <div class="registry">
-                  <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-                  <div class="registry__actions">
-                    <button class="button is-danger">Eliminar</button>
-                    <button class="button is-warning">Editar</button>
-                  </div>
-                </div>
-                <div class="registry">
-                  <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-                  <div class="registry__actions">
-                    <button class="button is-danger">Eliminar</button>
-                    <button class="button is-warning">Editar</button>
-                  </div>
-                </div>
-                <div class="registry">
-                  <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-                  <div class="registry__actions">
-                    <button class="button is-danger">Eliminar</button>
-                    <button class="button is-warning">Editar</button>
-                  </div>
-                </div>
-                <div class="registry">
-                  <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-                  <div class="registry__actions">
-                    <button class="button is-danger">Eliminar</button>
-                    <button class="button is-warning">Editar</button>
-                  </div>
-                </div>
-                <div class="registry">
-                  <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-                  <div class="registry__actions">
-                    <button class="button is-danger">Eliminar</button>
-                    <button class="button is-warning">Editar</button>
-                  </div>
-                </div>
-                <div class="registry">
-                  <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-                  <div class="registry__actions">
-                    <button class="button is-danger">Eliminar</button>
-                    <button class="button is-warning">Editar</button>
-                  </div>
-                </div>
-                <div class="registry">
-                  <div class="registry__page_name"><a>Nombre de la pagina :O</a></div>
-                  <div class="registry__actions">
-                    <button class="button is-danger">Eliminar</button>
-                    <button class="button is-warning">Editar</button>
-                  </div>
-                </div>
+                
               </div>
             </div>
           </div>
@@ -143,18 +87,18 @@
                   <div class="field">
                     <label class="label" for="phrase">Frase</label>
                     <div class="control">
-                      <input class="input" id="phrase" type="text">
+                      <input class="input" id="phrase" type="text" v-model="registerPhraseForm.phrase">
                     </div>
                   </div>
                   <div class="field is-grouped">
                     <div class="control">
-                      <button class="button is-success">Guardar</button>
+                      <button class="button is-success" @click="createPhrase">Guardar</button>
                     </div>
                     <div class="control">
-                      <button class="button is-warning">Limpiar</button>
+                      <button class="button is-warning" @click="clearForm('registerPhraseForm')">Limpiar</button>
                     </div>
                     <div class="control">
-                      <button class="button is-danger">Cancelar</button>
+                      <button class="button is-danger" @click="show('phrase_admin')">Cancelar</button>
                     </div>
                   </div>
                 </div>
@@ -163,12 +107,17 @@
             <div class="column">
               <h3 class="is-size-3 has-text-centered">Frases Registradas</h3>
               <div class="registries registries--small">
-                <div class="registry">
-                  <div class="registry__page_name">Nombre de la pagina :O</div>
-                  <div class="registry__actions">
-                    <button class="button is-danger">Eliminar</button>
-                    <button class="button is-warning">Editar</button>
-                  </div>
+                <div v-if="phrases.length == 0" class="has-text-centered mt-5">
+                  <p>Sin frases registradas</p>
+                </div>
+
+                <div v-else>
+                  <registry v-for="item in phrases"
+                    :key="item.id"
+                    type ="phrase"
+                    :data="item"
+                    :show_options="true">
+                  </registry>
                 </div>
               </div>
             </div>
@@ -210,28 +159,28 @@
           <div class="column">
             <h3 class="is-size-3">En servicio</h3>
             <div class="registries registries--medium">
-              <div v-if="getActivedPages.lenght == 0" class="has-text-centered mt-5">
+              <div v-if="getActivedPages.length == 0" class="has-text-centered mt-5">
                 <p>Sin paginas registradas</p>
               </div>
-              <registry v-for="item in getActivedPages"
+              <registry v-for="item in getActivedPages" v-else
                 :key="item.id"
-                type ="up"
-                :page_name="item.name"
-                :url="item.url" >
+                type ="page"
+                status="up"
+                :data="item">
               </registry>
             </div>
           </div>
           <div class="column">
             <h3 class="is-size-3">Fuera de servicio</h3>
             <div class="registries registries--medium">
-              <div v-if="getUnactivedPages.lenght == 0" class="has-text-centered mt-5">
+              <div v-if="getUnactivedPages.length == 0" class="has-text-centered mt-5">
                 <p>Sin paginas fuera de servicio</p>
               </div>
               <registry v-for="item in getUnactivedPages"
                 :key="item.id"
-                :type ="item.type"
-                :page_name="item.name"
-                :url="item.url" >
+                type ="page"
+                status="down"
+                :data="item">
               </registry>
             </div>
           </div>
@@ -258,6 +207,14 @@
         el: "#app",
         delimiters: ['[[', ']]'],
         data: {
+          registerPageForm: {
+            name: '',
+            url: '',
+            status: true
+          },
+          registerPhraseForm: {
+            phrase: ''
+          },
           pages: [],
           phrases: [],
           notifications_accepted: false,
@@ -289,16 +246,79 @@
             const data = await fetch('/phrases/all')
             this.phrases = await data.json()
           },
-          show(data) {
+          async show(data) {
+            console.log(data)
+            if(data == 'phrase_admin') {
+              await this.getPhrases()
+            }
             this.$refs[data].classList.toggle("is-active")
-            console.log(this.$refs[data].classList)
+            // console.log(this.$refs[data].classList)
+          },
+          async createPage() {
+            const onError = () => alert("ERROR AL REGISTRAR PAGINA.\nIntenta nuevamente.") 
+            try {
+              const res = await fetch("/pages/add", {
+                body: JSON.stringify(this.registerPageForm),
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              })
+              if(res.status != 200) {
+                onError()
+                return
+              }
+              alert("¡Listo!\nPágina registrada.")
+              await this.getPages()
+              this.clearForm('registerPageForm')
+              this.show('page_admin')
+            } catch (error) {
+              onError()
+            }
+          
+          },
+          async createPhrase() {
+            const onError = () => alert("ERROR AL REGISTRAR FRASE.\nIntenta nuevamente.") 
+            try {
+              const res = await fetch("/phrases/add", {
+                body: JSON.stringify(this.registerPhraseForm),
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              })
+              if(res.status != 200) {
+                onError()
+                return
+              }
+              alert("¡Listo!\Frase registrada.")
+              this.clearForm('registerPhraseForm')
+              this.show('phrase_admin')
+            } catch (error) {
+              onError()
+            }
+
+          },
+          clearForm(formID) {
+            if(!confirm("¿Seguro desea borrar la información ya ingresada?")) {
+              return
+            }
+            const forms = {
+              registerPageForm: {
+                name: '',
+                url: '',
+                status: true
+              },
+              registerPhraseForm: {
+                phrase: ''
+              }
+            }
+            this[formID] = forms[formID]
           }
         },
         computed: {
           getUnactivedPages() {
-            let pages = this.pages.filter(i => i.status == false)
-            pages.forEach(i => i.type = "down")
-            return pages
+            return this.pages.filter(i => i.status == false)
           },
           getActivedPages() {
             return this.pages.filter(i => i.status == true)
