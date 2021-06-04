@@ -4,6 +4,7 @@ import (
 	"embed"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/manicar2093/web-monitor/connections"
@@ -56,7 +57,15 @@ func main() {
 	sseRouter := router.PathPrefix("/sse").Subrouter()
 	sseRouter.Handle("/sse-validator", sseValidatorController).Methods(http.MethodGet)
 
-	log.Fatal("Error al iniciar servidor: ", http.ListenAndServe(":7890", router))
+	srv := &http.Server{
+		Addr:         ":7890",
+		WriteTimeout: time.Second * 15,
+		ReadTimeout:  time.Second * 15,
+		IdleTimeout:  time.Second * 60,
+		Handler:      router, // Pass our instance of gorilla/mux in.
+	}
+
+	log.Fatal("Error al iniciar servidor: ", srv.ListenAndServe())
 
 }
 
@@ -76,5 +85,5 @@ func init() {
 	pageController = controllers.NewPageController(pageDao, pageService)
 	sseValidatorController = sse.NewBroker()
 
-	validatorService = services.NewValidatorService(5, pageDao, sseValidatorController)
+	validatorService = services.NewValidatorService(60*10, pageDao, sseValidatorController)
 }
