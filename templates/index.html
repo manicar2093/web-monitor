@@ -64,7 +64,7 @@
                     :data="item"
                     :show_options="true"
                     @erase="onErase"
-                    @update="onUpdate">
+                    @update="onUpdateRequest">
                   </registry>
                 </div>
                 
@@ -120,7 +120,7 @@
                     :data="item"
                     :show_options="true"
                     @erase="onErase"
-                    @update="onUpdate">
+                    @update="onUpdateRequest">
                   </registry>
                 </div>
               </div>
@@ -194,12 +194,20 @@
         </div>
       </div>
       <div class="container" v-else>
-        <div class="card has-text-centered">
+        <div class="card has-text-centered" v-if="!appClosed">
           <h1 class="is-size-1 ">
             Sin permiso para notificaciones
           </h1>
           <p class="mt-5">
             Debes aceptar los permisos para enviar notificaciones para que la app funcione correctamente.
+          </p>
+        </div>
+        <div class="card has-text-centered" v-else>
+          <h1 class="is-size-1 ">
+            La aplicación se ha cerrado
+          </h1>
+          <p class="mt-5">
+            Ya puede cerrar la ventana :)
           </p>
         </div>
       </div>
@@ -225,6 +233,7 @@
           pages: [],
           phrases: [],
           notifications_accepted: false,
+          appClosed: false,
           greet: "Hello from vue"
         },
         methods: {
@@ -254,7 +263,6 @@
             this.phrases = await data.json()
           },
           async show(data) {
-            console.log(data)
             if(data == 'phrase_admin') {
               await this.getPhrases()
             }
@@ -262,7 +270,28 @@
             // console.log(this.$refs[data].classList)
           },
           async createPage() {
-            const onError = () => alert("ERROR AL REGISTRAR PAGINA.\nIntenta nuevamente.") 
+            const onError = (accion) => alert(`ERROR AL ${accion} PAGINA.\nIntenta nuevamente.`)
+            if(this.registerPageForm.id){
+              try {
+                const res = await fetch("/pages/update", {
+                  body: JSON.stringify(this.registerPageForm),
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  }
+                })
+                if(res.status != 200) {
+                  onError()
+                  return
+                }
+                alert("¡Listo!\nPágina actualizada.")
+                await this.getPages()
+                this.clearForm('registerPageForm')
+              } catch (error) {
+                onError()
+              }
+              return
+            }
             try {
               const res = await fetch("/pages/add", {
                 body: JSON.stringify(this.registerPageForm),
@@ -280,12 +309,33 @@
               this.clearForm('registerPageForm')
               this.show('page_admin')
             } catch (error) {
-              onError()
+              onError("ACTUALIZAR")
             }
           
           },
           async createPhrase() {
             const onError = () => alert("ERROR AL REGISTRAR FRASE.\nIntenta nuevamente.") 
+            if(this.registerPhraseForm.id) {
+              try {
+                const res = await fetch("/phrases/update", {
+                  body: JSON.stringify(this.registerPhraseForm),
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  }
+                })
+                if(res.status != 200) {
+                  onError()
+                  return
+                }
+                alert("¡Listo!\nFrase actualizada.")
+                this.clearForm('registerPhraseForm')
+                await this.getPhrases()
+              } catch (error) {
+                onError()
+              }
+              return
+            }
             try {
               const res = await fetch("/phrases/add", {
                 body: JSON.stringify(this.registerPhraseForm),
@@ -304,6 +354,7 @@
             } catch (error) {
               onError()
             }
+            
 
           },
           clearForm(formID, askConfirmation=false) {
@@ -322,20 +373,73 @@
             }
             this[formID] = forms[formID]
           },
-          onErase(data) {
-            console.log(data)
+          async onErase(data) {
+            if(data.type == "page"){
+              await this.deletePage(data)
+              return
+            }
+
+            await this.deletePhrase(data)
+            return
+            
           },
-          onUpdate(data) {
-            console.log(data)
+          onUpdateRequest(data) {
+            if(data.type == 'page') {
+              this.registerPageForm = data
+              return
+            }
+            this.registerPhraseForm = data
           },
           async closeApp() {
 
             try {
               await fetch("/close", {method: "POST"})
             } catch (error) {
-              while(true) {
-                alert("Ya puedes cerrar la ventana")
+              this.notifications_accepted = false
+              this.appClosed = true
+            }
+          },
+          async deletePage(data) {
+            const onError = () => alert("ERROR AL BORRAR PAGINA.\nIntenta nuevamente.") 
+            try {
+              const res = await fetch("/pages/delete", {
+                method:"DELETE",
+                body: JSON.stringify(data),
+                headers: {
+                  'Content-Type': "application/json"
+                }
+              });
+              if(res.status != 200) {
+                onError()
+                return
               }
+              alert("¡Listo!\nPágina eliminada.")
+              await this.getPages()
+            } catch (error) {
+              console.error(error)
+              onError()
+              return
+            }
+          },
+          async deletePhrase(data) {
+            const onError = () => alert("ERROR AL BORRAR FRASE.\nIntenta nuevamente.") 
+            try {
+              const res = await fetch("/phrases/delete", {
+                method:"DELETE",
+                body: JSON.stringify(data),
+                headers: {
+                  'Content-Type': "application/json"
+                }
+              });
+              if(res.status != 200) {
+                onError()
+                return
+              }
+              alert("¡Listo!\Frase eliminada.")
+              await this.getPhrases()
+            } catch (error) {
+              onError()
+                return
             }
           }
         },
