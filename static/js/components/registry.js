@@ -22,8 +22,8 @@ Vue.component("registry", {
         <div class="registry__actions">
             <button v-if="type == 'page' && status == 'down'" @click="validatePage" class="button is-info" title="Revisamos el status de la página">Actualizar</button>
             <div v-if="show_options">
-                <button class="button is-danger">Eliminar</button>
-                <button class="button is-warning">Editar</button>
+                <button class="button is-danger" @click="erase">Eliminar</button>
+                <button class="button is-warning" @click="update">Editar</button>
             </div>
             
         </div>
@@ -31,13 +31,13 @@ Vue.component("registry", {
     `,
     methods: {
         validatePage() {
-            this.$emit("verifyPage", this.url)
+            this.$emit("verifyPage", {...this.data, type: this.type})
         },
-        delete( ) {
-            this.$emit("delete", this.data)
+        erase( ) {
+            this.$emit("erase", {...this.data, type: this.type})
         },
         update() {
-            this.$emit("update", this.data)
+            this.$emit("update", {...this.data, type: this.type})
         }
     },
     computed: {
