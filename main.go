@@ -32,11 +32,20 @@ var phraseController controllers.PhraseController
 var pageController controllers.PageController
 var sseValidatorController *sse.Broker
 
+var srv *http.Server
+
 func main() {
 
 	router := mux.NewRouter()
 
 	router.HandleFunc("/", controller.IndexPage).Methods(http.MethodGet)
+	router.HandleFunc("/close", func(rw http.ResponseWriter, r *http.Request) {
+
+		e := srv.Shutdown(r.Context())
+		if e != nil {
+			panic(e)
+		}
+	}).Methods(http.MethodPost)
 
 	router.PathPrefix("/static/").Handler(http.FileServer(http.FS(static)))
 
@@ -57,7 +66,7 @@ func main() {
 	sseRouter := router.PathPrefix("/sse").Subrouter()
 	sseRouter.Handle("/sse-validator", sseValidatorController).Methods(http.MethodGet)
 
-	srv := &http.Server{
+	srv = &http.Server{
 		Addr:         ":7890",
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
