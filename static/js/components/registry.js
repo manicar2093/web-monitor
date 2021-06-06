@@ -3,11 +3,11 @@ Vue.component("registry", {
     delimiters: ['[[', ']]'],
     template: /*html*/ `
     <div :class="generalClasses">
-        <div v-if="status == 'down'">
+        <!-- <div v-if="status == 'down'">
             <div class="registry__time">
                 <p>00:00:00</p>
             </div>
-        </div>
+        </div> -->
         
         <div class="registry__page_name">
             <div v-if="type == 'phrase'" >
@@ -49,4 +49,5 @@ Vue.component("registry", {
             return `registry ${registryType}`
         },
     }
+    
 })
