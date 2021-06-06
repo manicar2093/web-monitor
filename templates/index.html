@@ -169,7 +169,7 @@
               <div v-if="getActivedPages.length == 0" class="has-text-centered mt-5">
                 <p>Sin paginas registradas</p>
               </div>
-              <registry v-for="item in getActivedPages" v-else
+              <registry v-for="item in activedPages" v-else
                 :key="item.id"
                 type ="page"
                 status="up"
@@ -183,7 +183,7 @@
               <div v-if="getUnactivedPages.length == 0" class="has-text-centered mt-5">
                 <p>Sin paginas fuera de servicio</p>
               </div>
-              <registry v-for="item in getUnactivedPages"
+              <registry v-for="item in unactivedPages"
                 :key="item.id"
                 type ="page"
                 status="down"
@@ -230,6 +230,8 @@
           registerPhraseForm: {
             phrase: ''
           },
+          activedPages: [],
+          unactivedPages: [],
           pages: [],
           phrases: [],
           notifications_accepted: false,
@@ -441,6 +443,11 @@
               onError()
                 return
             }
+          },
+          handleSseService(e) {
+            if(e.data.cause == 'No 200 status code') {
+              
+            }
           }
         },
         computed: {
@@ -454,6 +461,15 @@
         async created() {
             await this.requestNotificationsPermissions()
             await this.getPages()
+            this.unactivedPages =  this.pages.filter(i => i.status == false)
+            this.activedPages = this.pages.filter(i => i.status == true)
+
+            const evtSource = new EventSource("/sse/sse-validator");
+            evtSource.onmessage = this.handleSseService
+            evtSource.onopen = (e) => console.log("Connected to SSE")
+            evtSource.onerror = (e) => console.error(e)
+
+
         }
       })
       
