@@ -49,6 +49,9 @@ func (broker *Broker) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		case event := <-broker.Notifier:
 			fmt.Fprintf(w, "data: %s\n\n", event)
 			flusher.Flush()
+		default:
+			delete(broker.clients, r)
+			return
 		}
 	}
 

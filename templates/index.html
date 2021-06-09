@@ -218,6 +218,7 @@
     
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
     <script>
+
       const app = new Vue({
         el: "#app",
         delimiters: ['[[', ']]'],
@@ -236,7 +237,7 @@
           phrases: [],
           notifications_accepted: false,
           appClosed: false,
-          greet: "Hello from vue"
+          evtSource: null,
         },
         methods: {
           async requestNotificationsPermissions() {
@@ -259,6 +260,8 @@
           async getPages() {
             const data = await fetch('/pages/all')
             this.pages = await data.json()
+            this.unactivedPages =  this.pages.filter(i => i.status == false)
+            this.activedPages = this.pages.filter(i => i.status == true)
           },
           async getPhrases() {
             const data = await fetch('/phrases/all')
@@ -444,11 +447,21 @@
                 return
             }
           },
-          handleSseService(e) {
-            if(e.data.cause == 'No 200 status code') {
-              
-            }
-          }
+          sseHandler(e) {
+            console.log("Creating notification")
+            let data = JSON.parse(e.data)
+            let page = this.getPageByID(data.pageID)
+            const phraseIndex = this.getRandomArbitrary()
+            let noti = new Notification(this.phrases[phraseIndex].phrase, {
+              body: `La pagina '${page.name}' no responde`
+            })
+          },
+          getPageByID(id) {
+            return this.pages.find((i)=> i.id == id)
+          },
+          getRandomArbitrary() {
+            return Math.floor(Math.random() * (this.phrases.length));
+          }          
         },
         computed: {
           getUnactivedPages() {
@@ -461,15 +474,12 @@
         async created() {
             await this.requestNotificationsPermissions()
             await this.getPages()
-            this.unactivedPages =  this.pages.filter(i => i.status == false)
-            this.activedPages = this.pages.filter(i => i.status == true)
-
-            const evtSource = new EventSource("/sse/sse-validator");
-            evtSource.onmessage = this.handleSseService
-            evtSource.onopen = (e) => console.log("Connected to SSE")
-            evtSource.onerror = (e) => console.error(e)
-
-
+            await this.getPhrases()
+            
+            this.evtSource = new EventSource("/sse/sse-validator");
+            this.evtSource.onmessage = this.sseHandler
+            // this.evtSource.onopen = (e) => console.log("Connected to SSE")
+            // this.evtSource.onerror = (e) => console.error(e)
         }
       })
       
