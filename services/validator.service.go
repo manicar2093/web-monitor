@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-co-op/gocron"
 	"github.com/manicar2093/web-monitor/dao"
+	"github.com/manicar2093/web-monitor/entities"
 	"github.com/manicar2093/web-monitor/models"
 )
 
@@ -42,13 +43,13 @@ func NewValidatorService(minutes int, pagesDao dao.PageDao, observers ...models.
 
 // ValidatePages valida las paginas. Al haber error realiza el panic
 func (v ValidatorServiceImpl) Start() {
-	v._cron.Every(v.Minutes).Seconds().Tag("validator").Do(v.validatePages)
+	v._cron.Every(v.Minutes).Seconds().Tag("validator").Do(v.validateAllPages)
 	go func() {
 		v._cron.StartBlocking()
 	}()
 }
 
-func (v ValidatorServiceImpl) validatePages() {
+func (v ValidatorServiceImpl) validateAllPages() {
 	log.Println("Comienza la validación")
 	pages, err := v.pagesDao.GetAllPages()
 	if err != nil {
@@ -61,40 +62,43 @@ func (v ValidatorServiceImpl) validatePages() {
 	}
 
 	for _, d := range pages {
-		res, err := v.client.Get(d.URL)
-		log.Println("Response from", d.URL, ":", res)
-		// TODO: distinguir cuando regresa un 429 Too Many Requests para excluirlo por un determinado tiempo
-		if err != nil {
-			v.notifyAll(
-				&Notification{
-					PageID: d.ID,
-					Error:  err.Error(),
-					Cause:  "Error on client :/",
-				})
-			d.Status = false
-			v.pagesDao.Update(&d)
-			continue
-		}
-
-		if res.StatusCode != http.StatusOK {
-			v.notifyAll(
-				&Notification{
-					PageID: d.ID,
-					Error:  "Calling to URL wasn't success",
-					Cause:  "No 200 status code",
-				})
-			d.Status = false
-			v.pagesDao.Update(&d)
-			continue
-		}
-		// TODO: agregar distintivo cuando camba status de false a true
-
-		d.Status = true
-		v.pagesDao.Update(&d)
-
+		v.ValidatePage(d)
 	}
 
 	log.Println("Termina la validación de paginas")
+}
+
+func (v ValidatorServiceImpl) ValidatePage(page entities.Page) {
+	res, err := v.client.Get(page.URL)
+	// log.Println("Response from", page.URL, ":", res)
+	// TODO: distinguir cuando regresa un 429 Too Many Requests para excluirlo por un determinado tiempo
+	if err != nil {
+		v.notifyAll(
+			&Notification{
+				PageID: page.ID,
+				Error:  err.Error(),
+				Cause:  "Error on client :/",
+			})
+		page.Status = false
+		v.pagesDao.Update(&page)
+		return
+	}
+
+	if res.StatusCode != http.StatusOK {
+		v.notifyAll(
+			&Notification{
+				PageID: page.ID,
+				Error:  "Calling to URL wasn't success",
+				Cause:  "No 200 status code",
+			})
+		page.Status = false
+		v.pagesDao.Update(&page)
+		return
+	}
+	// TODO: agregar distintivo cuando camba status de false a true
+
+	page.Status = true
+	v.pagesDao.Update(&page)
 }
 
 func (v ValidatorServiceImpl) notifyAll(data interface{}) {
