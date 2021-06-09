@@ -11,7 +11,7 @@ type Broker struct {
 	Notifier       chan interface{}
 	newClient      chan chan interface{}
 	closingClients chan chan interface{}
-	clients        map[chan interface{}]bool
+	clients        map[*http.Request]bool
 }
 
 func NewBroker() (broker *Broker) {
@@ -19,10 +19,8 @@ func NewBroker() (broker *Broker) {
 		Notifier:       make(chan interface{}, 1),
 		newClient:      make(chan chan interface{}),
 		closingClients: make(chan chan interface{}),
-		clients:        make(map[chan interface{}]bool),
+		clients:        make(map[*http.Request]bool),
 	}
-
-	go broker.listen()
 
 	return
 }
@@ -38,44 +36,41 @@ func (broker *Broker) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Connection", "keep-alive")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	messageChan := make(chan interface{})
+	broker.clients[r] = true
 
-	broker.newClient <- messageChan
-
-	defer func() {
-		broker.closingClients <- messageChan
-	}()
-
-	notify := r.Context().Done()
-
-	go func() {
-		<-notify
-		broker.closingClients <- messageChan
-	}()
-
-	for {
-		fmt.Fprintf(w, "data: %s\n\n", <-messageChan)
-		flusher.Flush()
-	}
-}
-
-func (broker *Broker) listen() {
+	log.Printf("Client added. %d registreted clients", len(broker.clients))
 
 	for {
 		select {
-		case s := <-broker.newClient:
-			broker.clients[s] = true
-			log.Printf("Client added. %d registrated clients", len(broker.clients))
-		case s := <-broker.closingClients:
-			delete(broker.clients, s)
+		case <-r.Context().Done():
+			delete(broker.clients, r)
 			log.Printf("Removed client. %d registreted clients", len(broker.clients))
+			return
 		case event := <-broker.Notifier:
-			for clientMessageChan, _ := range broker.clients {
-				clientMessageChan <- event
-			}
+			fmt.Fprintf(w, "data: %s\n\n", event)
+			flusher.Flush()
 		}
 	}
+
 }
+
+// func (broker *Broker) listen() {
+
+// 	for {
+// 		select {
+// 		case s := <-broker.newClient:
+// 			broker.clients[s] = true
+// 			log.Printf("Client added. %d registrated clients", len(broker.clients))
+// 		case <-broker.closingClients:
+// 			// delete(broker.clients, s)
+// 			log.Printf("Removed client. %d registreted clients", len(broker.clients))
+// 		case event := <-broker.Notifier:
+// 			for clientMessageChan, _ := range broker.clients {
+// 				clientMessageChan <- event
+// 			}
+// 		}
+// 	}
+// }
 
 func (t Broker) Notify(data interface{}) {
 	j, e := json.Marshal(data)
