@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/manicar2093/web-monitor/config"
 	"github.com/manicar2093/web-monitor/connections"
 	"github.com/manicar2093/web-monitor/controllers"
 	"github.com/manicar2093/web-monitor/dao"
@@ -67,7 +68,7 @@ func main() {
 	sseRouter.Handle("/sse-validator", sseValidatorController).Methods(http.MethodGet)
 
 	srv = &http.Server{
-		Addr:         ":7890",
+		Addr:         config.Port,
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
@@ -79,8 +80,8 @@ func main() {
 }
 
 func init() {
-	phraseConnection := connections.NewFileDatabase("./phrases.json")
-	pagesConnection := connections.NewFileDatabase("./pages.json")
+	phraseConnection := connections.NewFileDatabase(config.PhrasesFile)
+	pagesConnection := connections.NewFileDatabase(config.PagesFile)
 
 	phraseDao = dao.NewPhraseDao(phraseConnection)
 	pageDao = dao.NewPageDao(pagesConnection)
@@ -94,5 +95,5 @@ func init() {
 	pageController = controllers.NewPageController(pageDao, pageService)
 	sseValidatorController = sse.NewBroker()
 
-	validatorService = services.NewValidatorService(60*10, pageDao, sseValidatorController)
+	validatorService = services.NewValidatorService(config.SecondsToValidate, pageDao, sseValidatorController)
 }
