@@ -38,8 +38,6 @@ func (broker *Broker) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	broker.clients[r] = true
 
-	log.Printf("Client added. %d registreted clients", len(broker.clients))
-
 	for {
 		select {
 		case <-r.Context().Done():
