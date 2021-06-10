@@ -31,7 +31,7 @@ Vue.component("registry", {
     `,
     methods: {
         validatePage() {
-            this.$emit("verifyPage", {...this.data, type: this.type})
+            this.$emit("verify", {...this.data, type: this.type})
         },
         erase( ) {
             this.$emit("erase", {...this.data, type: this.type})

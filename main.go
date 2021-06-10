@@ -62,7 +62,7 @@ func main() {
 	pageRouter.HandleFunc("/update", pageController.EditPage).Methods(http.MethodPut)
 	pageRouter.HandleFunc("/all", pageController.GetAllPages).Methods(http.MethodGet)
 	pageRouter.HandleFunc("/do-exists", pageController.PageExists).Methods(http.MethodGet)
-	pageRouter.HandleFunc("/validate", pageController.ValidatePage).Methods(http.MethodGet)
+	pageRouter.HandleFunc("/validate", pageController.ValidatePage).Methods(http.MethodPost)
 
 	sseRouter := router.PathPrefix("/sse").Subrouter()
 	sseRouter.Handle("/sse-validator", sseValidatorController).Methods(http.MethodGet)
@@ -80,6 +80,8 @@ func main() {
 }
 
 func init() {
+	sseValidatorController = sse.NewBroker()
+
 	phraseConnection := connections.NewFileDatabase(config.PhrasesFile)
 	pagesConnection := connections.NewFileDatabase(config.PagesFile)
 
@@ -89,11 +91,10 @@ func init() {
 	templateService = services.NewTemplateService(&tpl)
 	phraseService = services.NewPhraseService(phraseDao)
 	pageService = services.NewPageService(pageDao)
+	validatorService = services.NewValidatorService(config.SecondsToValidate, pageDao, sseValidatorController)
 
 	controller = controllers.NewTemplateController(templateService)
 	phraseController = controllers.NewPhraseController(phraseDao, phraseService)
-	pageController = controllers.NewPageController(pageDao, pageService)
-	sseValidatorController = sse.NewBroker()
+	pageController = controllers.NewPageController(pageDao, pageService, validatorService)
 
-	validatorService = services.NewValidatorService(config.SecondsToValidate, pageDao, sseValidatorController)
 }

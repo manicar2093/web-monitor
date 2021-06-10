@@ -88,7 +88,13 @@ const app = new Vue({
                     onError()
                     return
                 }
-                alert("¡Listo!\nPágina registrada.")
+                
+                const statusPage = await res.json()
+                if(statusPage.error) {
+                    alert("¡Listo!\nPágina registrada, pero no respondió")
+                }else {
+                    alert("¡Listo!\nPágina registrada.")
+                }
                 await this.getPages()
                 this.clearForm('registerPageForm')
                 this.show('page_admin')
@@ -231,7 +237,6 @@ const app = new Vue({
         async sseHandler(e) {
             console.log("Creating notification")
             let data = JSON.parse(e.data)
-            console.log(data)
             let page = this.getPageByID(data.pageID)
 
             if(data.recovered) {
@@ -239,6 +244,10 @@ const app = new Vue({
                     body: `La pagina '${page.name}' ya respondio :D`
                 })
                 await this.getPages()
+                return
+            }
+
+            if(!data.pageID) {
                 return
             }
             
@@ -254,6 +263,25 @@ const app = new Vue({
         },
         getRandomArbitrary() {
             return Math.floor(Math.random() * (this.phrases.length));
+        },
+        async validatePage(page) {
+            const res = await fetch('/pages/validate', {
+                body: JSON.stringify({
+                    id: page.id,
+                    url: page.url
+                }),
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            const statusPage = await res.json()
+            if(statusPage.recovered) {
+                alert(`La página ${page.name} fue recuperada :D`)
+                this.getPageByID(page.id).status = true
+                return
+            }
+            alert(`La página ${page.name} un no responde D:`)
         }
     },
     computed: {

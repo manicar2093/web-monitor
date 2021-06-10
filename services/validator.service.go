@@ -17,12 +17,13 @@ type Notification struct {
 	Error      string `json:"error,omitempty"`
 	StatusCode int    `json:"status_code,omitempty"`
 	Cause      string `json:"cause"`
-	Recovered  bool   `json:"recovered,omitempty"`
+	Recovered  bool   `json:"recovered"`
 }
 
 type ValidatorService interface {
 	// ValidatePages valida las paginas. Al haber error realiza el panic
 	Start()
+	ValidatePage(page entities.Page) Notification
 }
 
 type ValidatorServiceImpl struct {
@@ -63,59 +64,57 @@ func (v ValidatorServiceImpl) validateAllPages() {
 	}
 
 	for _, d := range pages {
-		v.ValidatePage(d)
+		n := v.ValidatePage(d)
+		v.notifyAll(&n)
 	}
 
 	log.Println("Termina la validación de paginas")
 }
 
-func (v ValidatorServiceImpl) ValidatePage(page entities.Page) {
+func (v ValidatorServiceImpl) ValidatePage(page entities.Page) Notification {
 	res, err := v.client.Get(page.URL)
 	// log.Println("Response from", page.URL, ":", res)
 	// TODO: distinguir cuando regresa un 429 Too Many Requests para excluirlo por un determinado tiempo
 	if err != nil {
-		v.notifyAll(
-			&Notification{
-				PageID:    page.ID,
-				Error:     err.Error(),
-				Cause:     "Error on client :/",
-				Recovered: false,
-			})
+
 		page.Status = false
 		v.pagesDao.Update(&page)
-		return
+		return Notification{
+			PageID:    page.ID,
+			Error:     err.Error(),
+			Cause:     "Error on client :/",
+			Recovered: false,
+		}
 	}
 
 	if res.StatusCode != http.StatusOK {
-		v.notifyAll(
-			&Notification{
-				PageID:     page.ID,
-				Error:      "Calling to URL wasn't success",
-				Cause:      "No 200 status code",
-				StatusCode: res.StatusCode,
-				Recovered:  false,
-			})
+
 		page.Status = false
 		v.pagesDao.Update(&page)
-		return
+		return Notification{
+			PageID:     page.ID,
+			Error:      "Calling to URL wasn't success",
+			Cause:      "No 200 status code",
+			StatusCode: res.StatusCode,
+			Recovered:  false,
+		}
 	}
 	// TODO: agregar distintivo cuando camba status de false a true
 
 	if !page.Status {
-		v.notifyAll(
-			&Notification{
-				PageID:     page.ID,
-				Cause:      "Good response",
-				StatusCode: res.StatusCode,
-				Recovered:  true,
-			})
 		page.Status = true
 		v.pagesDao.Update(&page)
-		return
+		return Notification{
+			PageID:     page.ID,
+			Cause:      "Good response",
+			StatusCode: res.StatusCode,
+			Recovered:  true,
+		}
 	}
 
 	page.Status = true
 	v.pagesDao.Update(&page)
+	return Notification{}
 }
 
 func (v ValidatorServiceImpl) notifyAll(data interface{}) {

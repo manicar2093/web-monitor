@@ -33,10 +33,11 @@ type PageController interface {
 type PageControllerImpl struct {
 	pageDao     dao.PageDao
 	pageService services.PageService
+	validator   services.ValidatorService
 }
 
-func NewPageController(pageDao dao.PageDao, pageService services.PageService) PageController {
-	return &PageControllerImpl{pageDao, pageService}
+func NewPageController(pageDao dao.PageDao, pageService services.PageService, validator services.ValidatorService) PageController {
+	return &PageControllerImpl{pageDao, pageService, validator}
 }
 
 // GetAllPages regresa todas las paginas registradas
@@ -78,13 +79,16 @@ func (p PageControllerImpl) AddPage(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	if _, err = p.pageService.AddPage(page); err != nil {
+	if page, err = p.pageService.AddPage(page); err != nil {
 		log.Printf("error al guardar la pagina. Detalles: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	n := p.validator.ValidatePage(page)
+
+	json.NewEncoder(w).Encode(&n)
+
 }
 
 // EditPage para editar una pagina
@@ -114,7 +118,17 @@ func (p PageControllerImpl) ValidatePage(w http.ResponseWriter, r *http.Request)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	panic("Not implemented") //TODO. implement
+	page, err := p.pageDao.FindPageByURL(pageID.URL)
+	if err != nil {
+		log.Printf("error al obtener id de la pagina. Detalles: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	n := p.validator.ValidatePage(page)
+
+	json.NewEncoder(w).Encode(n)
+
 }
 
 // PageExists valida si la pagina ya esta registrada
