@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <title>Web Monitor</title>
+  </head>
+  <body>
+    <div id="app">
+      <div class="modal" ref="page_admin">
+        <div class="modal-background"></div>
+        <div class="modal-content is-large card">
+          <div class="hero is-small is-info">
+            <div class="hero-body">
+              <h2 class="title">Registra una página</h2>
+              <p class="subtitle">Dinos que página quieres que revisemos</p>
+            </div>
+          </div>
+          <div class="columns is-multiline">
+            <div class="column">
+              <form class="hero" action="#">
+                <div class="hero-body">
+                  <div class="field">
+                    <label class="label" for="page_name">Nombre</label>
+                    <div class="control">
+                      <input class="input" id="page_name" type="text" v-model="registerPageForm.name">
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="page_url">URL</label>
+                    <div class="control">
+                      <input class="input" id="page_url" type="url" v-model="registerPageForm.url">
+                    </div>
+                  </div>
+                  <div class="field is-grouped">
+                    <div class="control">
+                      <button class="button is-success" @click="createPage">Guardar</button>
+                    </div>
+                    <div class="control">
+                      <button class="button is-warning" @click="clearForm('registerPageForm', true)">Limpiar</button>
+                    </div>
+                    <div class="control">
+                      <button class="button is-danger" @click="show('page_admin')">Cancelar</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="column">
+              <h3 class="is-size-3 has-text-centered">Registrados</h3>
+              <div class="registries registries--small">
+
+                <div v-if="pages.length == 0" class="has-text-centered mt-5">
+                  <p>Sin paginas registradas</p>
+                </div>
+
+                <div v-else>
+                  <registry v-for="item in pages"
+                    :key="item.id"
+                    type ="page"
+                    :data="item"
+                    :show_options="true"
+                    @erase="onErase"
+                    @update="onUpdateRequest">
+                  </registry>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal" ref="phrase_admin">
+        <div class="modal-background"></div>
+        <div class="modal-content is-large card">
+          <div class="hero is-small is-info">
+            <div class="hero-body">
+              <h2 class="title">Registra una frase</h2>
+              <p class="subtitle">¿Cómo te avisamos que algo sucedió? :O</p>
+            </div>
+          </div>
+          <div class="columns is-multiline">
+            <div class="column">
+              <form class="hero" action="#">
+                <div class="hero-body">
+                  <div class="field">
+                    <label class="label" for="phrase">Frase</label>
+                    <div class="control">
+                      <input class="input" id="phrase" type="text" v-model="registerPhraseForm.phrase">
+                    </div>
+                  </div>
+                  <div class="field is-grouped">
+                    <div class="control">
+                      <button class="button is-success" @click="createPhrase">Guardar</button>
+                    </div>
+                    <div class="control">
+                      <button class="button is-warning" @click="clearForm('registerPhraseForm', true)">Limpiar</button>
+                    </div>
+                    <div class="control">
+                      <button class="button is-danger" @click="show('phrase_admin')">Cancelar</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="column">
+              <h3 class="is-size-3 has-text-centered">Frases Registradas</h3>
+              <div class="registries registries--small">
+                <div v-if="phrases.length == 0" class="has-text-centered mt-5">
+                  <p>Sin frases registradas</p>
+                </div>
+
+                <div v-else>
+                  <registry v-for="item in phrases"
+                    :key="item.id"
+                    type ="phrase"
+                    :data="item"
+                    :show_options="true"
+                    @erase="onErase"
+                    @update="onUpdateRequest">
+                  </registry>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hero is-link"> 
+        <div class="hero-body">
+          <h1 class="title is-size-1">Web Monitor</h1>
+          <p class="subtitle is-size-6">Atento a cuando internet se cae.</p>
+        </div>
+      </div>
+      <div class="navbar mb-5">
+        <div class="container">
+          <div class="navbar-brand">
+            <div class="navbar-burger" role="button" data-target="mainMenu" aria-label="menu" aria-expanded="false"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></div>
+          </div>
+          <div class="navbar-menu" id="mainMenu">
+            <div class="navbar-end">
+              <div class="navbar-item">
+                <button class="is-medium button is-info is-light" id="fire_page_admin" title="Agregar Página" data-target="page_admin" @click="show('page_admin')"><span class="icon"><i class="fa fa-globe"></i></span><span>Administrar Páginas</span></button>
+              </div>
+              <div class="navbar-item">
+                <button class="is-medium button is-info is-light" id="fire_phrase_admin" title="Agregar Frase" data-target="phrase_admin" @click="show('phrase_admin')"><span class="icon"><i class="fa fa-pencil"></i></span><span>Administar Frases</span></button>
+              </div>
+              <div class="navbar-item">
+                <button class="is-medium button is-danger is-light" title="Terminar la aplicación" @click="closeApp"><span class="icon"><i class="fa fa-times-circle"></i></span><span>Terminar Aplicación</span></button>
+              </div>
+              <div class="navbar-divider"></div>
+              <div class="navbar-item is-hidden-desktop">
+                <button class="is-medium button is-success is-light" title="Agregar Frase"><span class="icon"><i class="fa fa-pencil"></i></span><span>Mostrar solo en servicio</span></button>
+              </div>
+              <div class="navbar-item is-hidden-desktop">
+                <button class="is-medium button is-danger is-light" title="Agregar Frase"><span class="icon"><i class="fa fa-pencil"></i></span><span>Mostrar solo fuera de servicio</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container" v-if="notifications_accepted">
+        <div class="columns has-text-centered">
+          <div class="column">
+            <h3 class="is-size-3">En servicio</h3>
+            <div class="registries registries--medium">
+              <div v-if="getActivedPages.length == 0" class="has-text-centered mt-5">
+                <p>Sin paginas registradas</p>
+              </div>
+              <registry v-for="item in activedPages" v-else
+                :key="item.id"
+                type ="page"
+                status="up"
+                :data="item">
+              </registry>
+            </div>
+          </div>
+          <div class="column">
+            <h3 class="is-size-3">Fuera de servicio</h3>
+            <div class="registries registries--medium">
+              <div v-if="getUnactivedPages.length == 0" class="has-text-centered mt-5">
+                <p>Sin paginas fuera de servicio</p>
+              </div>
+              <registry v-for="item in unactivedPages"
+                :key="item.id"
+                type ="page"
+                status="down"
+                :data="item"
+                @verify="validatePage">
+              </registry>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container" v-else>
+        <div class="card has-text-centered" v-if="!appClosed">
+          <h1 class="is-size-1 ">
+            Sin permiso para notificaciones
+          </h1>
+          <p class="mt-5">
+            Debes aceptar los permisos para enviar notificaciones para que la app funcione correctamente.
+          </p>
+        </div>
+        <div class="card has-text-centered" v-else>
+          <h1 class="is-size-1 ">
+            La aplicación se ha cerrado
+          </h1>
+          <p class="mt-5">
+            Ya puede cerrar la ventana :)
+          </p>
+        </div>
+      </div>
+      <footer class="footer footer--center">
+        <p class="subtitle">Created by <span class="bold">@manicar2093</span></p>
+      </footer>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script src="/static/js/vue_impl.js"></script>
+    <script src="/static/js/components/registry.js"></script>
+  </body>
+</html>
