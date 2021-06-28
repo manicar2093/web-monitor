@@ -2,6 +2,7 @@ package dao
 
 import (
 	"log"
+	"net/http"
 	"os"
 	"testing"
 
@@ -21,13 +22,13 @@ func TestPageDao(t *testing.T) {
 			ID:     uuid.New().String(),
 			Name:   "testing",
 			URL:    "aurl",
-			Status: true,
+			Status: http.StatusText(http.StatusOK),
 		},
 		{
 			ID:     uuid.New().String(),
 			Name:   "testing",
 			URL:    "aurl",
-			Status: true,
+			Status: http.StatusText(http.StatusOK),
 		},
 	}
 
@@ -57,7 +58,7 @@ func TestPageDao(t *testing.T) {
 			ID:     id,
 			Name:   "testing",
 			URL:    "aurl",
-			Status: true,
+			Status: http.StatusText(http.StatusOK),
 		}
 		require.NoError(t, dao.Update(&p), "error inesperado")
 		pages, err := dao.GetAllPages()

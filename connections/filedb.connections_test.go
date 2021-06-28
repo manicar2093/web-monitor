@@ -3,6 +3,7 @@ package connections
 import (
 	"encoding/json"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 	"testing"
@@ -66,7 +67,7 @@ func TestPublicMethods(t *testing.T) {
 		ID:     uuid.New().String(),
 		Name:   "testing",
 		URL:    "aurl",
-		Status: true,
+		Status: http.StatusText(http.StatusOK),
 	}
 
 	t.Run("Escribir un objeto JSON", func(t *testing.T) {
