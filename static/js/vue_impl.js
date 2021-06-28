@@ -5,7 +5,6 @@ const app = new Vue({
         registerPageForm: {
             name: '',
             url: '',
-            status: true
         },
         registerPhraseForm: {
             phrase: ''
@@ -39,8 +38,8 @@ const app = new Vue({
         async getPages() {
             const data = await fetch('/pages/all')
             this.pages = await data.json()
-            this.unactivedPages = this.pages.filter(i => i.status == false)
-            this.activedPages = this.pages.filter(i => i.status == true)
+            this.unactivedPages = this.pages.filter(i => i.is_working == false)
+            this.activedPages = this.pages.filter(i => i.is_working == true)
         },
         async getPhrases() {
             const data = await fetch('/phrases/all')
@@ -89,8 +88,8 @@ const app = new Vue({
                     return
                 }
                 
-                const statusPage = await res.json()
-                if(statusPage.error) {
+                const {page} = await res.json()
+                if(!page.is_working) {
                     alert("¡Listo!\nPágina registrada, pero no respondió")
                 }else {
                     alert("¡Listo!\nPágina registrada.")
@@ -194,6 +193,9 @@ const app = new Vue({
         async deletePage(data) {
             const onError = () => alert("ERROR AL BORRAR PAGINA.\nIntenta nuevamente.")
             try {
+                if(!confirm("¡Estas seguro en eliminar la página?")){
+                    return
+                }
                 const res = await fetch("/pages/delete", {
                     method: "DELETE",
                     body: JSON.stringify(data),
@@ -237,24 +239,26 @@ const app = new Vue({
         async sseHandler(e) {
             console.log("Creating notification")
             let data = JSON.parse(e.data)
-            let page = this.getPageByID(data.pageID)
-
-            if(data.recovered) {
+            console.log("DATA", data)
+            if(!data) { // avoid process when there is no data in streaming
+                console.log("No data in strem")
+                return
+            }
+            let {page} = data
+            if(data.page.recovered) {
                 new Notification("¡Recuperada!", {
                     body: `La pagina '${page.name}' ya respondio :D`
                 })
-                await this.getPages()
-                return
+            } else if (!data.page.is_working) {
+                const phraseIndex = this.getRandomArbitrary()
+                new Notification(this.phrases[phraseIndex].phrase, {
+                    body: `La pagina '${page.name}' no responde`
+                })
+            } else if(data.page_id) {
+                new Notification(this.phrases[phraseIndex].phrase, {
+                    body: `Un error inesperado en la pagina '${page.name}'`
+                })
             }
-
-            if(!data.pageID) {
-                return
-            }
-            
-            const phraseIndex = this.getRandomArbitrary()
-            new Notification(this.phrases[phraseIndex].phrase, {
-                body: `La pagina '${page.name}' no responde`
-            })
             await this.getPages()
 
         },
@@ -275,21 +279,14 @@ const app = new Vue({
                     "Content-Type": "application/json"
                 }
             })
-            const statusPage = await res.json()
-            if(statusPage.recovered) {
-                alert(`La página ${page.name} fue recuperada :D`)
-                this.getPageByID(page.id).status = true
+            const {page:PageRes} = await res.json()
+            if(PageRes.recovered) {
+                alert(`La página ${PageRes.name} fue recuperada :D`)
+                this.getPageByID(PageRes.id) = PageRes
                 return
+            } else if (!PageRes.is_working){
+                alert(`La página ${PageRes.name} un no responde D:`)
             }
-            alert(`La página ${page.name} un no responde D:`)
-        }
-    },
-    computed: {
-        getUnactivedPages() {
-            return this.pages.filter(i => i.status == false)
-        },
-        getActivedPages() {
-            return this.pages.filter(i => i.status == true)
         }
     },
     async created() {
