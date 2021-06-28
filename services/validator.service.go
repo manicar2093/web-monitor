@@ -11,17 +11,10 @@ import (
 	"github.com/manicar2093/web-monitor/models"
 )
 
-type Notification struct {
-	PageID string         `json:"page_id,omitempty"`
-	Error  string         `json:"error,omitempty"`
-	Cause  string         `json:"cause,omitempty"`
-	Page   *entities.Page `json:"page,inline,omitempty"`
-}
-
 type ValidatorService interface {
-	// ValidatePages valida las paginas. Al haber error realiza el panic
 	Start()
-	ValidatePage(page *entities.Page, isInstant bool) (Notification, bool)
+	// ValidatePages valida las paginas. Al haber error realiza el panic
+	ValidatePage(page *entities.Page, isInstant bool) (models.Notification, bool)
 }
 
 type ValidatorServiceImpl struct {
@@ -32,19 +25,26 @@ type ValidatorServiceImpl struct {
 	client    models.HTTPClient
 }
 
-func NewValidatorService(Seconds int, pagesDao dao.PageDao, client models.HTTPClient, observers ...models.Observer) ValidatorService {
+func NewValidatorService(pagesDao dao.PageDao, client models.HTTPClient) ValidatorService {
 	v := &ValidatorServiceImpl{
-		Seconds,
-		pagesDao,
-		observers,
-		gocron.NewScheduler(time.UTC),
-		client,
+		pagesDao: pagesDao,
+		client:   client,
+	}
+	return v
+}
+
+func NewValidatorServiceAndStart(Seconds int, pagesDao dao.PageDao, client models.HTTPClient, observers ...models.Observer) ValidatorService {
+	v := &ValidatorServiceImpl{
+		Seconds:   Seconds,
+		pagesDao:  pagesDao,
+		_cron:     gocron.NewScheduler(time.UTC),
+		observers: observers,
+		client:    client,
 	}
 	v.Start()
 	return v
 }
 
-// ValidatePages valida las paginas. Al haber error realiza el panic
 func (v ValidatorServiceImpl) Start() {
 	v._cron.Every(v.Seconds).Seconds().Tag("validator").Do(v.validateAllPages)
 	go func() {
@@ -52,6 +52,7 @@ func (v ValidatorServiceImpl) Start() {
 	}()
 }
 
+// ValidatePages valida las paginas. Al haber error realiza el panic
 func (v ValidatorServiceImpl) validateAllPages() {
 	log.Println("Comienza la validación")
 	pages, err := v.pagesDao.GetAllPages()
@@ -75,12 +76,12 @@ func (v ValidatorServiceImpl) validateAllPages() {
 	log.Println("Termina la validación de paginas")
 }
 
-func (v ValidatorServiceImpl) ValidatePage(page *entities.Page, isInstant bool) (Notification, bool) {
+func (v ValidatorServiceImpl) ValidatePage(page *entities.Page, directValidation bool) (models.Notification, bool) {
 
 	res, err := v.client.Get(page.URL)
 	if err != nil {
 
-		n := Notification{
+		n := models.Notification{
 			PageID: page.ID,
 			Error:  err.Error(),
 			Cause:  "client error. validate correct page registry",
@@ -89,28 +90,28 @@ func (v ValidatorServiceImpl) ValidatePage(page *entities.Page, isInstant bool) 
 		return n, false
 	}
 
-	if isInstant {
+	if directValidation {
 		return v.instantValidation(page, res)
 	}
 
-	return v.normalValidation(page, res)
+	return v.cronValidation(page, res)
 
 }
 
-func (v ValidatorServiceImpl) instantValidation(page *entities.Page, res *http.Response) (Notification, bool) {
+func (v ValidatorServiceImpl) instantValidation(page *entities.Page, res *http.Response) (models.Notification, bool) {
 	page.AssignHTTPResValues(res)
 	v.pagesDao.Update(page)
-	return Notification{Page: page}, false
+	return models.Notification{Page: page}, false
 }
 
-func (v ValidatorServiceImpl) normalValidation(page *entities.Page, res *http.Response) (Notification, bool) {
+func (v ValidatorServiceImpl) cronValidation(page *entities.Page, res *http.Response) (models.Notification, bool) {
 
 	if page.HasChange(res) {
 		v.pagesDao.Update(page)
-		return Notification{Page: page}, true
+		return models.Notification{Page: page}, true
 	}
 
-	return Notification{}, false
+	return models.Notification{}, false
 }
 
 func (v ValidatorServiceImpl) notifyAll(data interface{}) {

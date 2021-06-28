@@ -98,7 +98,7 @@ func init() {
 	client = &http.Client{
 		Transport: &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}},
 	}
-	validatorService = services.NewValidatorService(config.SecondsToValidate, pageDao, client, sseValidatorController)
+	validatorService = services.NewValidatorServiceAndStart(config.SecondsToValidate, pageDao, client, sseValidatorController)
 
 	controller = controllers.NewTemplateController(templateService)
 	phraseController = controllers.NewPhraseController(phraseDao, phraseService)
