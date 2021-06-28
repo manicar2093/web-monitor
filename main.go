@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"embed"
 	"log"
 	"net/http"
@@ -11,6 +12,7 @@ import (
 	"github.com/manicar2093/web-monitor/connections"
 	"github.com/manicar2093/web-monitor/controllers"
 	"github.com/manicar2093/web-monitor/dao"
+	"github.com/manicar2093/web-monitor/models"
 	"github.com/manicar2093/web-monitor/services"
 	"github.com/manicar2093/web-monitor/sse"
 )
@@ -27,6 +29,8 @@ var templateService services.TemplateService
 var phraseService services.PhraseService
 var pageService services.PageService
 var validatorService services.ValidatorService
+
+var client models.HTTPClient
 
 var controller controllers.TemplateController
 var phraseController controllers.PhraseController
@@ -91,7 +95,10 @@ func init() {
 	templateService = services.NewTemplateService(&tpl)
 	phraseService = services.NewPhraseService(phraseDao)
 	pageService = services.NewPageService(pageDao)
-	validatorService = services.NewValidatorService(config.SecondsToValidate, pageDao, sseValidatorController)
+	client = &http.Client{
+		Transport: &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}},
+	}
+	validatorService = services.NewValidatorService(config.SecondsToValidate, pageDao, client, sseValidatorController)
 
 	controller = controllers.NewTemplateController(templateService)
 	phraseController = controllers.NewPhraseController(phraseDao, phraseService)
