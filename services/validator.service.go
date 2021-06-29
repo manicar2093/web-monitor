@@ -99,7 +99,8 @@ func (v ValidatorServiceImpl) ValidatePage(page *entities.Page, directValidation
 }
 
 func (v ValidatorServiceImpl) instantValidation(page *entities.Page, res *http.Response) (models.Notification, bool) {
-	page.AssignHTTPResValues(res)
+	page.CreateMemento()
+	page.HasChange(res)
 	v.pagesDao.Update(page)
 	return models.Notification{Page: page}, false
 }
