@@ -13,6 +13,7 @@ import (
 	"github.com/manicar2093/web-monitor/controllers"
 	"github.com/manicar2093/web-monitor/dao"
 	"github.com/manicar2093/web-monitor/models"
+	"github.com/manicar2093/web-monitor/scripts"
 	"github.com/manicar2093/web-monitor/services"
 	"github.com/manicar2093/web-monitor/sse"
 )
@@ -87,10 +88,12 @@ func init() {
 	sseValidatorController = sse.NewBroker()
 
 	phraseConnection := connections.NewFileDatabase(config.PhrasesFile)
-	pagesConnection := connections.NewFileDatabase(config.PagesFile)
+	pagesConnection := connections.NewFileDatabase(config.PagesFileV2)
 
 	phraseDao = dao.NewPhraseDao(phraseConnection)
 	pageDao = dao.NewPageDao(pagesConnection)
+
+	scripts.DatabaseMigrationV1_3(pageDao)
 
 	templateService = services.NewTemplateService(&tpl)
 	phraseService = services.NewPhraseService(phraseDao)
