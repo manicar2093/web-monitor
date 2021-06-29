@@ -21,7 +21,6 @@ func NewPageService(pageDao dao.PageDao) PageService {
 
 func (p PageServiceImpl) AddPage(page entities.Page) (entities.Page, error) {
 	page.ID = uuid.NewString()
-	page.Status = true
 	err := p.pageDao.Save(page)
 	return page, err
 }

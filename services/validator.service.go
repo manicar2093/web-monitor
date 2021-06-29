@@ -1,7 +1,6 @@
 package services
 
 import (
-	"crypto/tls"
 	"log"
 	"net/http"
 	"time"
@@ -12,45 +11,48 @@ import (
 	"github.com/manicar2093/web-monitor/models"
 )
 
-type Notification struct {
-	PageID     string `json:"pageID"`
-	Error      string `json:"error,omitempty"`
-	StatusCode int    `json:"status_code,omitempty"`
-	Cause      string `json:"cause"`
-	Recovered  bool   `json:"recovered"`
-}
-
 type ValidatorService interface {
-	// ValidatePages valida las paginas. Al haber error realiza el panic
 	Start()
-	ValidatePage(page entities.Page) Notification
+	// ValidatePages valida las paginas. Al haber error realiza el panic
+	ValidatePage(page *entities.Page, isInstant bool) (models.Notification, bool)
 }
 
 type ValidatorServiceImpl struct {
-	Minutes   int
+	Seconds   int
 	pagesDao  dao.PageDao
 	observers []models.Observer
 	_cron     *gocron.Scheduler
-	client    *http.Client
+	client    models.HTTPClient
 }
 
-func NewValidatorService(minutes int, pagesDao dao.PageDao, observers ...models.Observer) ValidatorService {
-	c := &http.Client{
-		Transport: &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}},
+func NewValidatorService(pagesDao dao.PageDao, client models.HTTPClient) ValidatorService {
+	v := &ValidatorServiceImpl{
+		pagesDao: pagesDao,
+		client:   client,
 	}
-	v := &ValidatorServiceImpl{minutes, pagesDao, observers, gocron.NewScheduler(time.UTC), c}
+	return v
+}
+
+func NewValidatorServiceAndStart(Seconds int, pagesDao dao.PageDao, client models.HTTPClient, observers ...models.Observer) ValidatorService {
+	v := &ValidatorServiceImpl{
+		Seconds:   Seconds,
+		pagesDao:  pagesDao,
+		_cron:     gocron.NewScheduler(time.UTC),
+		observers: observers,
+		client:    client,
+	}
 	v.Start()
 	return v
 }
 
-// ValidatePages valida las paginas. Al haber error realiza el panic
 func (v ValidatorServiceImpl) Start() {
-	v._cron.Every(v.Minutes).Seconds().Tag("validator").Do(v.validateAllPages)
+	v._cron.Every(v.Seconds).Seconds().Tag("validator").Do(v.validateAllPages)
 	go func() {
 		v._cron.StartBlocking()
 	}()
 }
 
+// ValidatePages valida las paginas. Al haber error realiza el panic
 func (v ValidatorServiceImpl) validateAllPages() {
 	log.Println("Comienza la validación")
 	pages, err := v.pagesDao.GetAllPages()
@@ -64,57 +66,53 @@ func (v ValidatorServiceImpl) validateAllPages() {
 	}
 
 	for _, d := range pages {
-		n := v.ValidatePage(d)
-		v.notifyAll(&n)
+		d.CreateMemento()
+		n, changed := v.ValidatePage(&d, false)
+		if changed {
+			v.notifyAll(&n)
+		}
 	}
 
 	log.Println("Termina la validación de paginas")
 }
 
-func (v ValidatorServiceImpl) ValidatePage(page entities.Page) Notification {
+func (v ValidatorServiceImpl) ValidatePage(page *entities.Page, directValidation bool) (models.Notification, bool) {
+
 	res, err := v.client.Get(page.URL)
-	// log.Println("Response from", page.URL, ":", res)
-	// TODO: distinguir cuando regresa un 429 Too Many Requests para excluirlo por un determinado tiempo
 	if err != nil {
 
-		page.Status = false
-		v.pagesDao.Update(&page)
-		return Notification{
-			PageID:    page.ID,
-			Error:     err.Error(),
-			Cause:     "Error on client :/",
-			Recovered: false,
+		n := models.Notification{
+			PageID: page.ID,
+			Error:  err.Error(),
+			Cause:  "client error. validate correct page registry",
 		}
+
+		return n, false
 	}
 
-	if res.StatusCode != http.StatusOK {
-
-		page.Status = false
-		v.pagesDao.Update(&page)
-		return Notification{
-			PageID:     page.ID,
-			Error:      "Calling to URL wasn't success",
-			Cause:      "No 200 status code",
-			StatusCode: res.StatusCode,
-			Recovered:  false,
-		}
-	}
-	// TODO: agregar distintivo cuando camba status de false a true
-
-	if !page.Status {
-		page.Status = true
-		v.pagesDao.Update(&page)
-		return Notification{
-			PageID:     page.ID,
-			Cause:      "Good response",
-			StatusCode: res.StatusCode,
-			Recovered:  true,
-		}
+	if directValidation {
+		return v.instantValidation(page, res)
 	}
 
-	page.Status = true
-	v.pagesDao.Update(&page)
-	return Notification{}
+	return v.cronValidation(page, res)
+
+}
+
+func (v ValidatorServiceImpl) instantValidation(page *entities.Page, res *http.Response) (models.Notification, bool) {
+	page.CreateMemento()
+	page.HasChange(res)
+	v.pagesDao.Update(page)
+	return models.Notification{Page: page}, false
+}
+
+func (v ValidatorServiceImpl) cronValidation(page *entities.Page, res *http.Response) (models.Notification, bool) {
+
+	if page.HasChange(res) {
+		v.pagesDao.Update(page)
+		return models.Notification{Page: page}, true
+	}
+
+	return models.Notification{}, false
 }
 
 func (v ValidatorServiceImpl) notifyAll(data interface{}) {

@@ -14,3 +14,12 @@ build_win:
 build_all:
 	@make build_linux
 	@make build_win
+
+test_all:
+	@go test ./... -v
+
+coverage:
+	@go test ./... -cover
+
+coverage_html:
+	@go test ./... -coverprofile c.out && go tool cover -html=c.out

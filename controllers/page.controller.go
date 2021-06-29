@@ -85,7 +85,7 @@ func (p PageControllerImpl) AddPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	n := p.validator.ValidatePage(page)
+	n, _ := p.validator.ValidatePage(&page, true)
 
 	json.NewEncoder(w).Encode(&n)
 
@@ -125,7 +125,7 @@ func (p PageControllerImpl) ValidatePage(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	n := p.validator.ValidatePage(page)
+	n, _ := p.validator.ValidatePage(&page, true)
 
 	json.NewEncoder(w).Encode(n)
 
