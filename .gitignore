@@ -3,3 +3,4 @@ dev.db
 /internal/**/*.json
 *.json
 *.exe
+*.out
