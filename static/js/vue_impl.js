@@ -16,6 +16,7 @@ const app = new Vue({
         notifications_accepted: false,
         appClosed: false,
         evtSource: null,
+        validationInterval: null,
     },
     methods: {
         async requestNotificationsPermissions() {
@@ -239,7 +240,6 @@ const app = new Vue({
         async sseHandler(e) {
             console.log("Creating notification")
             let data = JSON.parse(e.data)
-            console.log("DATA", data)
             if(!data) { // avoid process when there is no data in streaming
                 console.log("No data in strem")
                 return
@@ -255,8 +255,8 @@ const app = new Vue({
                     body: `La pagina '${page.name}' no responde`
                 })
             } else if(data.page_id) {
-                new Notification(this.phrases[phraseIndex].phrase, {
-                    body: `Un error inesperado en la pagina '${page.name}'`
+                new Notification(`Validación fallida`, {
+                    body: `Un error al validar la pagina '${page.name}'`
                 })
             }
             await this.getPages()
@@ -280,13 +280,22 @@ const app = new Vue({
                 }
             })
             const {page:PageRes} = await res.json()
+            console.log(PageRes)
             if(PageRes.recovered) {
-                alert(`La página ${PageRes.name} fue recuperada :D`)
-                this.getPageByID(PageRes.id) = PageRes
+                alert(`La página '${PageRes.name}' fue recuperada :D`)
+                await this.getPages()
                 return
             } else if (!PageRes.is_working){
-                alert(`La página ${PageRes.name} un no responde D:`)
+                alert(`La página '${PageRes.name}' aún no responde D:`)
             }
+        },
+        setIntervalHandler(){
+            if(!this.unactivedPages.length > 0) {
+                return
+            }
+            new Notification(`Recuerda...`, {
+                body: `Aún hay ${this.unactivedPages.length} página(s) sin responder :/`
+            })
         }
     },
     async created() {
@@ -298,5 +307,6 @@ const app = new Vue({
         this.evtSource.onmessage = this.sseHandler
         // this.evtSource.onopen = (e) => console.log("Connected to SSE")
         // this.evtSource.onerror = (e) => console.error(e)
+        this.validationInterval = setInterval(this.setIntervalHandler, 120000)
     }
 })
