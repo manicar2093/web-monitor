@@ -72,6 +72,7 @@ const app = new Vue({
                     await this.getPages()
                     this.clearForm('registerPageForm')
                 } catch (error) {
+                    console.log(error)
                     onError()
                 }
                 return
@@ -85,6 +86,7 @@ const app = new Vue({
                     }
                 })
                 if (res.status != 200) {
+                    console.log(error)
                     onError()
                     return
                 }
@@ -99,6 +101,7 @@ const app = new Vue({
                 this.clearForm('registerPageForm')
                 this.show('page_admin')
             } catch (error) {
+                console.log(error)
                 onError("ACTUALIZAR")
             }
 
@@ -155,7 +158,7 @@ const app = new Vue({
                 registerPageForm: {
                     name: '',
                     url: '',
-                    status: true
+                    status: ''
                 },
                 registerPhraseForm: {
                     phrase: ''
