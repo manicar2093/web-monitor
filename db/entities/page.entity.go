@@ -20,7 +20,7 @@ type Page struct {
 	Code      int          `json:"code"`
 	Recovered bool         `json:"recovered"`
 	IsWorking bool         `json:"is_working"`
-	memento   *PageMemento `json:"-"`
+	memento   *PageMemento `json:"-", db"-"`
 }
 
 // CreateMemento creates state for the page to validate if there were a change in its status
@@ -48,4 +48,8 @@ func (p *Page) AssignHTTPResValues(res *http.Response) {
 	p.Status = http.StatusText(res.StatusCode)
 	p.Code = res.StatusCode
 	p.IsWorking = utils.IsValidStatus(p.Code)
+}
+
+func (c Page) Table() string {
+	return "pages"
 }

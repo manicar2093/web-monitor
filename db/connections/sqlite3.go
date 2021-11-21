@@ -1,15 +1,16 @@
 package connections
 
 import (
-	"database/sql"
-
+	"github.com/go-rel/rel"
+	"github.com/go-rel/sqlite3"
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func NewSqliteConection(dbName string) *sql.DB {
-	conn, err := sql.Open("sqlite3", dbName)
+func NewSqliteConection(dbName string) rel.Repository {
+	adapter, err := sqlite3.Open(dbName)
 	if err != nil {
 		panic(err)
 	}
-	return conn
+
+	return rel.New(adapter)
 }
