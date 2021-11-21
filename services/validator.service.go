@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/go-co-op/gocron"
-	"github.com/manicar2093/web-monitor/dao"
-	"github.com/manicar2093/web-monitor/entities"
+	"github.com/manicar2093/web-monitor/db/dao"
+	"github.com/manicar2093/web-monitor/db/entities"
 	"github.com/manicar2093/web-monitor/models"
 )
 

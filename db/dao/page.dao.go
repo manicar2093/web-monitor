@@ -4,21 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/manicar2093/web-monitor/connections"
-	"github.com/manicar2093/web-monitor/entities"
+	"github.com/manicar2093/web-monitor/db/connections"
+	"github.com/manicar2093/web-monitor/db/entities"
 )
 
 var (
 	ErrNotFound = errors.New("page not found")
 )
-
-type PageDao interface {
-	GetAllPages() ([]entities.Page, error)
-	Delete(pageID string) error
-	Save(page entities.Page) error
-	Update(data *entities.Page) error
-	FindPageByURL(url string) (entities.Page, error)
-}
 
 type PageDaoImpl struct {
 	fdb *connections.FileDatabase

@@ -3,16 +3,9 @@ package dao
 import (
 	"encoding/json"
 
-	"github.com/manicar2093/web-monitor/connections"
-	"github.com/manicar2093/web-monitor/entities"
+	"github.com/manicar2093/web-monitor/db/connections"
+	"github.com/manicar2093/web-monitor/db/entities"
 )
-
-type PhraseDao interface {
-	GetAllPhrases() ([]entities.Phrase, error)
-	Delete(phraseID string) error
-	Save(phrase entities.Phrase) error
-	Update(phrase *entities.Phrase) error
-}
 
 type PhraseDaoImpl struct {
 	fdb *connections.FileDatabase

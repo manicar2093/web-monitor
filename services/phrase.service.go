@@ -2,8 +2,8 @@ package services
 
 import (
 	"github.com/google/uuid"
-	"github.com/manicar2093/web-monitor/dao"
-	"github.com/manicar2093/web-monitor/entities"
+	"github.com/manicar2093/web-monitor/db/dao"
+	"github.com/manicar2093/web-monitor/db/entities"
 )
 
 type PhraseService interface {

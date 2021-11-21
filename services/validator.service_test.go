@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/manicar2093/web-monitor/entities"
+	"github.com/manicar2093/web-monitor/db/entities"
 	"github.com/manicar2093/web-monitor/mocks"
 	"github.com/stretchr/testify/assert"
 )
