@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/manicar2093/web-monitor/entities"
+	"github.com/manicar2093/web-monitor/db/entities"
 	"github.com/stretchr/testify/require"
 )
 

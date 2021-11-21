@@ -9,18 +9,20 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/manicar2093/web-monitor/config"
-	"github.com/manicar2093/web-monitor/connections"
 	"github.com/manicar2093/web-monitor/controllers"
-	"github.com/manicar2093/web-monitor/dao"
+	"github.com/manicar2093/web-monitor/db/connections"
+	"github.com/manicar2093/web-monitor/db/dao"
 	"github.com/manicar2093/web-monitor/models"
 	"github.com/manicar2093/web-monitor/scripts"
 	"github.com/manicar2093/web-monitor/services"
 	"github.com/manicar2093/web-monitor/sse"
 )
 
+//go:generate cp -r ../../templates ./templates/
 //go:embed templates/*
 var tpl embed.FS
 
+//go:generate cp -r ../../static ./static/
 //go:embed static/*
 var static embed.FS
 var phraseDao dao.PhraseDao
@@ -79,6 +81,8 @@ func main() {
 		IdleTimeout:  time.Second * 60,
 		Handler:      router, // Pass our instance of gorilla/mux in.
 	}
+
+	log.Printf("Server started on http://localhost%s port", config.Port)
 
 	log.Fatal("Error al iniciar servidor: ", srv.ListenAndServe())
 

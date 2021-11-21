@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	entities "github.com/manicar2093/web-monitor/entities"
+	entities "github.com/manicar2093/web-monitor/db/entities"
 	mock "github.com/stretchr/testify/mock"
 
 	models "github.com/manicar2093/web-monitor/models"

@@ -3,10 +3,12 @@ const app = new Vue({
     delimiters: ['[[', ']]'],
     data: {
         registerPageForm: {
+            id: null,
             name: '',
             url: '',
         },
         registerPhraseForm: {
+            id: null,
             phrase: ''
         },
         activedPages: [],

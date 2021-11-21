@@ -1,14 +1,19 @@
-run:
-	@go run main.go
+run: clean_generates
+	@go run cmd/api/main.go
 
-build_linux:
+clean_generates:
+	@rm -r cmd/api/templates
+	@rm -r cmd/api/static
+	@go generate cmd/api/main.go
+
+build_linux: clean_generates
 	@echo "Building to LINUX initialized :3"
-	@GOOS=linux go build -o web-monitor_linux
+	@GOOS=linux go build -o web-monitor_linux cmd/api/main.go
 	@echo "Build Done :D"
 
-build_win:
+build_win: clean_generates
 	@echo "Building to WIN initialized :3"
-	@GOOS=windows go build -o web-monitor_win.exe
+	@GOOS=windows go build -o web-monitor_win.exe cmd/api/main.go
 	@echo "Build Done :D"
 
 build_all:

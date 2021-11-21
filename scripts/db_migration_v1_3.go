@@ -6,9 +6,9 @@ import (
 	"os"
 
 	"github.com/manicar2093/web-monitor/config"
-	"github.com/manicar2093/web-monitor/connections"
-	"github.com/manicar2093/web-monitor/dao"
-	"github.com/manicar2093/web-monitor/entities"
+	"github.com/manicar2093/web-monitor/db/connections"
+	"github.com/manicar2093/web-monitor/db/dao"
+	"github.com/manicar2093/web-monitor/db/entities"
 )
 
 // DatabaseMigrationV1_3 validates if a antique versión of the DB is been used to change it to the new one

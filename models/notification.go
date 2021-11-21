@@ -1,6 +1,6 @@
 package models
 
-import "github.com/manicar2093/web-monitor/entities"
+import "github.com/manicar2093/web-monitor/db/entities"
 
 type Notification struct {
 	PageID string         `json:"page_id,omitempty"`
