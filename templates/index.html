@@ -140,7 +140,7 @@
             <div class="navbar-burger" role="button" data-target="mainMenu" aria-label="menu" aria-expanded="false"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></div>
           </div>
           <div class="navbar-menu" id="mainMenu">
-            <div class="navbar-end">
+            <div class="navbar-end" v-if="!appClosed">
               <div class="navbar-item">
                 <button class="is-medium button is-info is-light" id="fire_page_admin" title="Agregar Página" data-target="page_admin" @click="show('page_admin')"><span class="icon"><i class="fa fa-globe"></i></span><span>Administrar Páginas</span></button>
               </div>
@@ -203,7 +203,7 @@
             Debes aceptar los permisos para enviar notificaciones para que la app funcione correctamente.
           </p>
         </div>
-        <div class="card has-text-centered" v-else>
+        <div class="card has-text-centered pb-3" v-else>
           <h1 class="is-size-1 ">
             La aplicación se ha cerrado
           </h1>

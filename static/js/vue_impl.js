@@ -72,6 +72,7 @@ const app = new Vue({
                     await this.getPages()
                     this.clearForm('registerPageForm')
                 } catch (error) {
+                    console.log(error)
                     onError()
                 }
                 return
@@ -85,6 +86,7 @@ const app = new Vue({
                     }
                 })
                 if (res.status != 200) {
+                    console.log(error)
                     onError()
                     return
                 }
@@ -99,6 +101,7 @@ const app = new Vue({
                 this.clearForm('registerPageForm')
                 this.show('page_admin')
             } catch (error) {
+                console.log(error)
                 onError("ACTUALIZAR")
             }
 
@@ -153,11 +156,13 @@ const app = new Vue({
             }
             const forms = {
                 registerPageForm: {
+                    id: null,
                     name: '',
                     url: '',
-                    status: true
+                    status: ''
                 },
                 registerPhraseForm: {
+                    id: null,
                     phrase: ''
                 }
             }
@@ -190,6 +195,8 @@ const app = new Vue({
                 this.notifications_accepted = false
                 this.appClosed = true
             }
+
+            clearInterval(this.validationInterval)
         },
         async deletePage(data) {
             const onError = () => alert("ERROR AL BORRAR PAGINA.\nIntenta nuevamente.")
@@ -305,8 +312,6 @@ const app = new Vue({
 
         this.evtSource = new EventSource("/sse/sse-validator");
         this.evtSource.onmessage = this.sseHandler
-        // this.evtSource.onopen = (e) => console.log("Connected to SSE")
-        // this.evtSource.onerror = (e) => console.error(e)
         this.validationInterval = setInterval(this.setIntervalHandler, 120000)
     }
 })
