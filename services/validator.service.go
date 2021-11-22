@@ -85,6 +85,7 @@ func (v ValidatorServiceImpl) ValidatePage(page *entities.Page, directValidation
 			PageID: page.ID,
 			Error:  err.Error(),
 			Cause:  "client error. validate correct page registry",
+			Page:   page,
 		}
 
 		return n, false

@@ -75,7 +75,7 @@ const app = new Vue({
                     this.clearForm('registerPageForm')
                 } catch (error) {
                     console.log(error)
-                    onError()
+                    onError("ACTUALIZAR")
                 }
                 return
             }
@@ -93,8 +93,8 @@ const app = new Vue({
                     return
                 }
                 
-                const {page} = await res.json()
-                if(!page.is_working) {
+                const resAsJson = await res.json()
+                if(!resAsJson.page.is_working) {
                     alert("¡Listo!\nPágina registrada, pero no respondió")
                 }else {
                     alert("¡Listo!\nPágina registrada.")
@@ -104,7 +104,7 @@ const app = new Vue({
                 this.show('page_admin')
             } catch (error) {
                 console.log(error)
-                onError("ACTUALIZAR")
+                onError("CREAR")
             }
 
         },
