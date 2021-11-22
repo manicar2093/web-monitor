@@ -1,9 +1,10 @@
 /node_modules
-dev.db
+*.db
 /**/*.json
 *.json
 *.exe
 *.out
+*.log
 web-monitor_linux
 cmd/api/static/
 cmd/api/templates/

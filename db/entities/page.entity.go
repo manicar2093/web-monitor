@@ -6,6 +6,19 @@ import (
 	"github.com/manicar2093/web-monitor/utils"
 )
 
+const PageCreationTableSQL = `
+CREATE TABLE IF NOT EXISTS "pages" (
+	id TEXT NOT NULL,
+	name TEXT NOT NULL,
+	url TEXT NOT NULL,
+	status TEXT,
+	code INTEGER,
+	recovered INTEGER,
+	is_working INTEGER,
+	PRIMARY KEY("id")
+);
+`
+
 type PageMemento struct {
 	Status    string
 	Code      int
