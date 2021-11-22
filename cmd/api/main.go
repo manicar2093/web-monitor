@@ -25,8 +25,11 @@ var tpl embed.FS
 //go:generate cp -r ../../static ./static/
 //go:embed static/*
 var static embed.FS
+
 var phraseDao dao.PhraseDao
+var phraseDaoSqlite dao.PhraseDao
 var pageDao dao.PageDao
+var pageDaoSqlite dao.PageDao
 
 var templateService services.TemplateService
 var phraseService services.PhraseService
@@ -93,22 +96,32 @@ func init() {
 
 	phraseConnection := connections.NewFileDatabase(config.PhrasesFile)
 	pagesConnection := connections.NewFileDatabase(config.PagesFileV2)
+	repo := connections.NewSqliteConection(config.DatabaseName)
 
 	phraseDao = dao.NewPhraseDao(phraseConnection)
 	pageDao = dao.NewPageDao(pagesConnection)
+	pageDaoSqlite = dao.NewPageDaoSqlite(repo)
+	phraseDaoSqlite = dao.NewPhraseDaoSqlite(repo)
 
 	scripts.DatabaseMigrationV1_3(pageDao)
+	scripts.DatabaseMigrationToSqlite(&scripts.MigrationToSqlite{
+		Conn:            repo,
+		PageDaoFile:     pageDao,
+		PageDaoSqlite:   pageDaoSqlite,
+		PhraseDaoFile:   phraseDao,
+		PhraseDaoSqlite: phraseDaoSqlite,
+	})
 
 	templateService = services.NewTemplateService(&tpl)
-	phraseService = services.NewPhraseService(phraseDao)
-	pageService = services.NewPageService(pageDao)
+	phraseService = services.NewPhraseService(phraseDaoSqlite)
+	pageService = services.NewPageService(pageDaoSqlite)
 	client = &http.Client{
 		Transport: &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}},
 	}
-	validatorService = services.NewValidatorServiceAndStart(config.SecondsToValidate, pageDao, client, sseValidatorController)
+	validatorService = services.NewValidatorServiceAndStart(config.SecondsToValidate, pageDaoSqlite, client, sseValidatorController)
 
 	controller = controllers.NewTemplateController(templateService)
-	phraseController = controllers.NewPhraseController(phraseDao, phraseService)
-	pageController = controllers.NewPageController(pageDao, pageService, validatorService)
+	phraseController = controllers.NewPhraseController(phraseDaoSqlite, phraseService)
+	pageController = controllers.NewPageController(pageDaoSqlite, pageService, validatorService)
 
 }

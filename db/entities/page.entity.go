@@ -6,6 +6,19 @@ import (
 	"github.com/manicar2093/web-monitor/utils"
 )
 
+const PageCreationTableSQL = `
+CREATE TABLE IF NOT EXISTS "pages" (
+	id TEXT NOT NULL,
+	name TEXT NOT NULL,
+	url TEXT NOT NULL,
+	status TEXT,
+	code INTEGER,
+	recovered INTEGER,
+	is_working INTEGER,
+	PRIMARY KEY("id")
+);
+`
+
 type PageMemento struct {
 	Status    string
 	Code      int
@@ -20,7 +33,7 @@ type Page struct {
 	Code      int          `json:"code"`
 	Recovered bool         `json:"recovered"`
 	IsWorking bool         `json:"is_working"`
-	memento   *PageMemento `json:"-"`
+	memento   *PageMemento `json:"-", db"-"`
 }
 
 // CreateMemento creates state for the page to validate if there were a change in its status
@@ -48,4 +61,8 @@ func (p *Page) AssignHTTPResValues(res *http.Response) {
 	p.Status = http.StatusText(res.StatusCode)
 	p.Code = res.StatusCode
 	p.IsWorking = utils.IsValidStatus(p.Code)
+}
+
+func (c Page) Table() string {
+	return "pages"
 }

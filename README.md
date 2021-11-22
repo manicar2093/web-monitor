@@ -26,10 +26,11 @@ You're ready to go!
 
 - You must not move the executable to other location. The saved data can be lost.
 - Linux executable might work on MacOS
-- This app has been tested in Chrome, Brave and Firefox browsers, but just in the first two it works. 
+- This app has been tested in Chrome, Brave and Firefox browsers, but just in the first two it works.
+- If you want to compile the project to Windows from Linux you must install `mingw-w64` and execute `make build_win`
 
 ## Comments
 
-If you have any doubt or have found a problem you can register an issue and I will check it as soon as possible. 
+If you have any doubt or have found a problem you can register an issue and I will check it as soon as possible.
 
 Happy coding! :D
