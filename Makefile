@@ -13,7 +13,7 @@ build_linux: clean_generates
 
 build_win: clean_generates
 	@echo "Building to WIN initialized :3"
-	@GOOS=windows go build -o web-monitor_win.exe cmd/api/main.go
+	@CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64 go build -o web-monitor_win.exe cmd/api/main.go
 	@echo "Build Done :D"
 
 build_all:
